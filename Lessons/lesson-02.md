@@ -1,10 +1,28 @@
 # ACS 3330 - Lesson 2: React Props and State
 
+## create-react-app is depracated what do we do? 
+
+It looks like `npx create-react-app` (CRA) is depracated. What are our alternatives? 
+
+Try these prompts with your favorite AI:
+
+> "create-react-app is deprecated, what alternatives are available?"
+
+> "Do these all work with Redux?"
+
+> "What about routers. Do these work with React Router?"
+
+Discuss the responses...
+
 ## Overview
 
-This lesson explores **props and state in React**, essential concepts for managing 
-data flow in your applications. You will learn how to pass data between components, 
-manage local state, and lift state to the parent for better control.
+This lesson explores **props and state in React**, essential concepts for managing data flow in your applications. You will learn how to pass data between components, manage local state, and lift state to the parent for better control.
+
+Try these prompts with your favorite AI:
+
+> "What are props and state in react apps, give me a beginner, intermediate, and advanced explanation."
+
+> "What do mutable and immutable mean in this context?"
 
 ---
 
@@ -32,13 +50,10 @@ Before we begin, take a few minutes to answer:
 ## **Props and State in React**
 
 ### **What are Props?**
-Props (**short for "properties"**) are **read-only** values passed from 
-a **parent component** to a **child component**. Props allow components 
-to be reusable and configurable.
+Props (**short for "properties"**) are **read-only** values passed from a **parent component** to a **child component**. Props allow components to be reusable and configurable.
 
 ### **What is State?**
-State represents **internal component data** that **can change over time**. 
-Updating state triggers a re-render of the component.
+State represents **internal component data** that **can change over time**. Updating state triggers a re-render of the component.
 
 ### **React's Rendering Model**
 A React component **re-renders** when:
@@ -49,6 +64,10 @@ Understanding this helps prevent unnecessary renders and optimize performance.
 
 ---
 
+# Props, State, and lifting State Lab
+
+The goal of this lab is to explore Props, State, and Lifting State. 
+
 ## **Part 1: Creating a Counter Component (Props)**
 Let's create a simple **counter** that displays:
 - A **label** (passed via props)
@@ -56,7 +75,8 @@ Let's create a simple **counter** that displays:
 - Two buttons (`+` and `-`)
 
 ### **1.1 Set Up a React Project**
-Run:
+Run the code below or use another React project like [Vite](https://vite.dev/guide/#scaffolding-your-first-vite-project):
+
 ```sh
 npx create-react-app props-and-state
 cd props-and-state
@@ -265,11 +285,9 @@ Modify `App.js`:
 🔹 **AI Stretch Prompt:** *"What’s the best way to dynamically add components in React?"*
 
 #### 🔹 **Stretch Challenge 3: Dynamic Counter List**
-- Add a "➖ remove Counter" button to dynamically remove a counter. 
-This might be best added to in the Counter Component. You may need a callback... 
+- Add a "➖ remove Counter" button to dynamically remove a counter. This might be best added in the Counter Component. You may need a callback... 
 
-🔹 **AI Stretch Prompt:** *"How can I add a button that will remove a counter?"* 
-For this prompt try dragging App.js and Counter.js into the AI window. 
+🔹 **AI Stretch Prompt:** *"How can I add a button that will remove a counter?"*  For this prompt try dragging App.js and Counter.js into the AI window. 
 
 ---
 

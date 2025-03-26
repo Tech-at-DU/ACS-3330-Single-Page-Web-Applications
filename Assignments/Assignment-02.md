@@ -1,168 +1,143 @@
-# Class - FEW 2.3 - Assignment 2
+# 🌦️ ACS 3330 – Assignment: React Weather App with OpenWeatherMap API
 
-## Description 
+## 📝 Description
+In this assignment, you’ll build a React app that connects to the **OpenWeatherMap API** and displays real-time weather data for a given zip code. You’ll use the **controlled component pattern** for handling form input, and apply **conditional rendering** to manage asynchronous states (loading, errors, data display).
 
-With this project you'll connect to the OpenWeatherMap API and display the weather data. You'll use the controlled component pattern to handle user input. 
+**Note!** I understand that you may have built this app or a similar app in the past. If that's the case, you can use an alternative web API of your choice. The goal is to cover the learning objectives, be sure to include these in your solution! 
 
-- Controlled Controlled Component Pattern. This pattern is used with form elements. 
-- Conditional Rendering pattern. This is a collection of coding patterns that render components or not render them based on props or state. 
+---
 
-## Why this assignment?
+## 🎯 Learning Goals
+- Understand and apply the **Controlled Component Pattern** in React
+- Use **asynchronous fetch calls** to load data from an API
+- Apply **conditional rendering patterns** to build dynamic interfaces
 
-The controlled pattern component is important since you'll use it every time you use form elements like input fields, check boxes, and radios buttons. All of these are essential to web applications. 
+---
 
-Conditionally rendering components is an important front end development it opens up lots of possiblities to the user interfaces you create with React.
-
-## Getting Started
-
-Make a new react project with: 
-
-`npx create-react-app weather-api`
-
-## Project requirements
-
-Follow the video tutorials here. Start at video: "Single Page Applications - Lesson 03 1"
-
-https://www.youtube.com/playlist?list=PLoN_ejT35AEhmWcDTI6M--ha_E4lTyAtx
-
-Follow the video tutorial to buid the app.
-
-## Challenges 
-
-### Challenge 1: Create a default React app
-
-Create a default react project and test it to make sure everything is working. 
-
-### Challenge 2: Register and get an API key from openweathermap
-
-Go to openweathermap.org, create an account, and generate an API key. 
-
-### Challenge 3: Create a Weather component
-
-Create a component that will fetch and display the weather data. You can call this something like `Weather`. For now your component can just display something like a h1 and "Weather". 
-
-Delete the default code in App.js and import and render your Weather component. 
-
-Test your work!
-
-### Challenge 4: Create a form to enter the zip and unit
-
-You'll need a form to enter the zip code. You'll use the zip code entered to get the weather data for that location. 
-
-Create a form in your Weather component. Add an input tag and use the Controlled component pattern to store the zip code entered in a state variable. Follow the notes here: 
-
-https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-03.md#controlled-component-pattern
-
-It's a good idea here to use a form tag and place your form elements in the form tag. Something like: 
-
-```JS
-<form>
-  <input 
-    type="text"
-  />
-</form>
+## 🚀 Getting Started
+Create a new React app:
+```bash
+npx create-react-app weather-api
 ```
 
-Test your work by displaying the zip value in the component. 
+---
 
-Display what you enter into the input to make sure it's working. 
+## 📦 Project Requirements
+Follow along with the videos starting at **Lesson 03** in this playlist:
+📽️ https://www.youtube.com/playlist?list=PLoN_ejT35AEhmWcDTI6M--ha_E4lTyAtx
 
-Stretch goal: Add the placeholder attribute and set the placeholder text to something like "enter your zip"
+Each challenge below builds on the previous one.
 
-Stretch goal: Use pattern attribute and a regular expressing to limit the input to a zip code pattern. 5 numbers. Here's some more information: 
+---
 
-- https://www.w3schools.com/tags/att_input_pattern.asp
-- https://css-tricks.com/html-for-zip-codes/
+## 🔧 Challenges
 
-Stretch Goal: Create drop down menu with the html `<select>` element that shows the unit. The unit is the temperature unit, it can be metric, imperial, or standard. You'll set hte value of this element with a state variable. 
+### 1️⃣ Create a Default React App
+- Scaffold a new project and test it with `npm start`
 
-Stretch Goal: Use three radio buttons that set select a unit. You'll need to set a state variable for this. 
+### 2️⃣ Register with OpenWeatherMap
+- Create a free account at https://openweathermap.org/
+- Get your API key
 
-The last two stretch goals both set the same thing. You can use them both just for experimental purposes but in a real project you'd probably use one or the other. 
+### 3️⃣ Create a Weather Component
+- Add a `Weather` component and render a simple header
+- Replace default `App.js` content with your component
 
-### Challenge 5: Fetch the weather data for the entered zip code
+### 4️⃣ Controlled Input Form
+- Add a form to enter a **zip code**
+- Use state to control the form input (controlled component pattern)
+- Display the current zip code below the form for testing
 
-Fetch the weather data from openweathermap.org using the `fetch()` api.
+💡 **Stretch Goals**
+- Add placeholder text and a `pattern` to restrict input to 5 digits
+- Add a dropdown or radio buttons to select temperature units (metric, imperial, standard)
 
-Use the guide in lessons 6 and 7: 
+🤖 **AI Research Prompts**
+- "What is the controlled component pattern in React?"
+- "How do I validate input using HTML pattern attribute?"
 
-- [Lesson 6 - Callbacks and Promise](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-06.md)
-- [Lesson 7 - Networks request with Fetch](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-07.md)
+### 5️⃣ Fetch Weather Data
+- Use `fetch()` to request data based on the entered zip
+- Show the weather data after submission
 
-Stretch goal: Use async and await. 
+💡 **Stretch Goals**
+- Use `async/await`
+- Handle network errors with `.catch()` or `try/catch`
 
-Stretch Goal: Handle network errors. If you're using `.then()` use `.catch()`. If you're using `async` and `await` use a `try{ ... } catch() { ... }` block. Read more about try catch here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
+🤖 **AI Research Prompts**
+- "Tell me about React's useEffect hook, give a beginner, intermediate, and advanced description."
+- "How does fetch work with async/await in React?"
+- "How do I handle errors when fetching data in React?"
 
-Note! Handling errors here will only cover errors that occur with the network. This doesn't cover errors that might occur with a bad request. For example, the openweathermap server is down. 
+After writing your solution to solve this problem, ask the AI to review your code. 
 
-A request with a bad zip code is not covered here since the request is worked successfully. 
+- "Review my code and give me your feedback. <paste your code here>"
 
-### Challenge 6: Use components to display the weather data
+### 6️⃣ Display Weather with a Subcomponent
+- Move display logic into a `DisplayWeather` component
+- Pass weather data as props
 
-Display the weather data in another component. Imagine you have a Weather component, this component might use another component to display the weather data rather than doing all of the work to laod and display the data itself. 
+💡 **Stretch Goal:** Use `cod === 200` to verify successful response, otherwise show an error message.
 
-Imagine the structure of your app as: 
+🤖 **AI Research Prompts**
+- "How do I pass props between components in React?"
+- "What does the cod field in OpenWeatherMap API response mean?"
+- "What COD codes does OpenWeathermap use? What do these code mean?"
 
-- Weather (loads the data and handles the form)
-  - DisplayWeather (display the data after it's loaded)
+### 7️⃣ Conditional Rendering
+- Show different views depending on the app state:
+  - No data yet
+  - Error from the server
+  - Weather data loaded and ready
 
-You might pass the weather data into the Display Weather component as props! This component then does all of the work of formatting, displaying, and styling the weather data. 
+🧠 [React Conditional Rendering](https://reactjs.org/docs/conditional-rendering.html)
 
-Stretch Goal: Handle errors from openweathermap. Note errors here will manifest in the cod property on the JSON response. When would you get an error? If you provide a bad zip cod will be 404, and **all of the other data will be missing!**
+🤖 **AI Research Prompts**
+- "What are the different patterns for conditional rendering in React?"
+- "How do I show a loading message while waiting for data in React?"
 
-How can you tell when there was an error? Check for a success instead! if cod is 200 then you can move on and get the temperature and other data. If cod is anything but 200 there was a problem. 
+---
 
-Use conditional rendering to render the weather data or render an error message. 
+## 🎨 Stretch Challenges
+- Style the app with CSS or a framework
+- Display more data: humidity, pressure, wind speed
+- Show a weather icon (e.g. `data.weather[0].icon`)
+- Add a button for **geolocation-based weather**
+  - Use `navigator.geolocation.getCurrentPosition()`
+  - Fetch data using OpenWeatherMap’s geolocation API
 
-### Challenge 7: Use Conditional Rendering
+🔐 Note: For geolocation to work, React app may need to run in HTTPS mode:
+```bash
+HTTPS=true npm start
+```
 
-When the app loads there isn't any weather data. It's also possible that you might get an error from the server in the case of a bad zip code. In these cases we can't display the weather data. Solve this problem with conditional rendering!
+💡 **Additional Stretch Challenge Ideas**
+- Allow users to search by city name or coordinates (lat/lon)
+- Display weather forecast for multiple days
+- Add loading animation while data is being fetched
+- Support saving a list of favorite zip codes and toggling between them
+- Use local storage to persist the last searched zip code
 
-Use one of the conditional rendering patterns to display an alternate message when there is no data to display. 
+---
 
-The goal here is to display something in place of the Weather data when the weather data has not yet been loaded. For example 
+## 🧰 Assessment Rubric
+| Category              | Does Not Meet             | Meets Expectations                                       | Exceeds Expectations                                                                 |
+|-----------------------|---------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------------|
+| **Completed**         | Did not complete          | Completed challenges 1–3                                | Completed challenges 4+                                                             |
+| **Functionality**     | Not functional            | Displays weather and handles errors                     | Shows temp, description, and atmospheric conditions with CSS styling                |
+| **Code Quality**      | Inconsistent formatting   | Clean, readable code with consistent formatting         | Well-commented with expressive variable and function names                          |
+| **Architecture**      | All code in App.js        | 3 components used                                        | 5+ specialized components handling props and formatting                             |
+| **Work Ethic**        | No commit history         | Initial and mid-point commits                           | 3+ hours of thoughtful commits, documenting decisions and progress                  |
 
-Check the notes from class: https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-05.md
+---
 
-For more information: 
+## 📚 Resources
+- [Lesson 03 – Controlled Component Pattern](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-03.md)
+- [Lesson 06 – Callbacks and Promises](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-06.md)
+- [Lesson 07 – Fetch API](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-07.md)
+- [Lesson 05 – Conditional Rendering](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-05.md)
 
-[conditional rendering](https://reactjs.org/docs/conditional-rendering.html) to display the data after it is loaded
+---
 
-### Stretch Challenges 
+🎉 Good luck and have fun building your first weather app!
 
-After you have completed the challenges above try these challenges. You can give any or all of these challenges a try and you don't have to do them in any order. 
-
-1. Add some CSS styles to give the project your look at style
-1. Expand the data that is displayed. The tutorial shows the temperature, description and feels like values. You can expand this to show:
-  - humidity
-  - pressure
-  - wind speed
-  - ...add any other properties...
-1. One of the properties included with the weather data is the `icon`. It's located at: `data.weather[0].icon`. This property is a string with a value like: `"04d"`. This value maps to an image for the weather condition! You can check the images against this [page](https://openweathermap.org/weather-conditions). You can display the images by either: 
-  - Displaying the OpenWeatherMap icon. Inspect their page to find the urls used. 
-  - Map icon code to your own icons or images. Where can you find images?
-    - Use google and find images
-    - Use icons from an icon set like one of these: 
-      - https://erikflowers.github.io/weather-icons/
-      - https://fontawesome.com/v5.15/icons?d=gallery&p=1&q=weather
-      - https://www.iconfinder.com/weather-icons?price=free
-1. Add a button to get the weather by Geolocation.
-  - You may need to launch react in HTTPS mode for this to work. To do that start with: `HTTPS=true npm start`
-  - To get the geocoordinates use: `navigator.geolocation.getCurrentPosition()` https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition
-  - You'll need to call OpenWeatherMap's geo api. Check the docs here: https://openweathermap.org/current
-
-### Resources
-
-This video playlist covers all of the material from class. The material for this assignment starts at video lesson 3. 
-
-- https://www.youtube.com/playlist?list=PLoN_ejT35AEhmWcDTI6M--ha_E4lTyAtx
-
-## Assessing the assignment
-
-| - | **Does not meet expectations** | **Meets expectations** | **Exceeds expectations** |
-|:-------------|:---------------------------|:-------------------------|:---------------------|
-| **Completed** | Did not complete | Completed challenges 1-3 | Completed challenges 4+ |
-| **Functional** | Is not functional | Displays the weather data and handles errors | Displays the temp in F and C along description and atmospheric conditions and has some CSS styles |
-| **Code quality** | Indentation and spacing is _inconsistent_ | Uses _consistent indentation and spacing_ | Well written and well commented, variable and function names are self commenting |
-| **Code Architecture and Structure** | All code is in App.js | Uses 3 components | Uses 5 or more components, components are specialized and perform formatting and display of data based on props |
-| **Work Ethic** | Did not commit when working on project | Initial commit at class and commit while working | Commits show 3 hours and clearly documents process | 
