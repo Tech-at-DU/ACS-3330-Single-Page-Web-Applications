@@ -101,8 +101,7 @@ function Counter(props) {
 export default Counter;
 ```
 
-🔹 **AI Review Prompt:** *"Does my Counter component follow best practices? 
-How could I improve reusability?"*
+🔹 **AI Review Prompt:** *"Does my Counter component follow best practices? How could I improve reusability?"*
 
 ### **1.3 Use the Counter Component in `App.js`**
 Modify `App.js`:
@@ -157,6 +156,8 @@ export default Counter;
 ```
 
 🔹 **AI Prompt:** *"Why does counter update when state changes?"*
+
+🔹 **AI Prompt:** *"How does React know when to re-render a component after state changes?"*
 
 🔹 **AI Prompt:** *"Explain what is happening on this line: const [count, setCount] = useState(0);"*
 
@@ -308,6 +309,6 @@ Modify `App.js`:
 ---
 
 ## **Resources**
-- [React State](https://reactjs.org/docs/faq-state.html)
-- [React Props](https://reactjs.org/docs/components-and-props.html)
+- [React Props](https://react.dev/learn/passing-props-to-a-component)
+- [React State](https://react.dev/learn/updating-objects-in-state)
 - [Lifting State](https://react.dev/learn/sharing-state-between-components)
