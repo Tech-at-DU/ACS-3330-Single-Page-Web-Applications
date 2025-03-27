@@ -23,7 +23,7 @@ This assignment introduces **React components**, **functional programming with `
    cd react-product-list
    npm start
    ```
-3. **Copy the [`data.json`](https://raw.githubusercontent.com/Make-School-Courses/FEW-2.3-Single-Page-Web-Applications/master/Assignments/data.json) file into your `src` directory.**
+3. **Copy the [`data.json`](./data.json) file into your `src` directory.**
 4. **Create a new module named `data.js`** in `src`. This will be used to process and export your product data.
 5. **Import the JSON data into your module:**
    ```js
