@@ -13,6 +13,9 @@ Try these prompts with your favorite AI:
 > "What about routers. Do these work with React Router?"
 
 Discuss the responses...
+- What alternatives are available?
+- What are the pros and cons of each?
+- Which will you use? 
 
 ## Overview
 
