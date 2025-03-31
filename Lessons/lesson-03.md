@@ -70,7 +70,7 @@ setShoppingCart([...shoppingCart, newItem]);
 ### 3️⃣ Create a Shopping Cart Component
 Create a `Cart` component. Pass it the items from state and display them as:
 
-#### Level 1 – Basic List
+#### 🦊 Level 1 – Basic List
 ```
 Zoolab $12.07 qty: 1
 Lotstring $185.21 qty: 1
@@ -81,7 +81,7 @@ Opela $29.83 qty: 1
 Opela $29.83 qty: 1
 ```
 
-#### Level 2 – Grouped by Item
+#### 🍄 Level 2 – Grouped by Item
 ```
 Zoolab $12.07 qty: 2
 Lotstring $185.21 qty: 1
@@ -99,6 +99,11 @@ Opela $29.83 qty: 3 total: $89.49
 
 💡 **AI Prompt:**
 > "How do I group duplicate items and show a total in a shopping cart in React?"
+
+#### 🏆 Super Stretch Challenge – Update the inventory
+When an Item is put in the cart decrease the number of units for that item stored in data. 
+
+In order for this update values stored with `useMemo` `data` will need to be declared as a dependency to `useMemo` and declared inside of a component! 
 
 ---
 
