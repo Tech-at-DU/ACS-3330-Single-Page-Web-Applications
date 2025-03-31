@@ -89,6 +89,8 @@ Fintone $190.79 qty: 1
 Opela $29.83 qty: 3
 ```
 
+How will you solve this problem? Think about where and when items are added to the cart? What type is the cart? If we add an item to the cart, how can we tell if an item of the same type already exists in the cart? 
+
 #### ⭐ Stretch Challenge – Include Row Totals
 ```
 Zoolab $12.07 qty: 2 total: $24.14
