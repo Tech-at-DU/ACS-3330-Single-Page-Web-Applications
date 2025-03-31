@@ -1,260 +1,118 @@
-# ACS 3330 - Lesson 3: React and Forms
+# 🧩 ACS 3330 - Lab 2: Product Dashboard with Shopping Cart
 
-## Overview
-
-This lesson explores handling forms in React, including:
-
-- Controlled components for form inputs.
-- Fetching data from APIs.
-- Handling network errors gracefully.
-- Using conditional rendering patterns.
-
-By the end, you'll apply these skills in a project that interacts with the OpenWeather API.
-
-## Learning Objectives
-
-By the end of this lesson, you will be able to:
-
-- Implement the Controlled Component Pattern in React forms.
-- Use state hooks to manage form data.
-- Build an app that integrates a public API.
-- Implement conditional rendering to handle different states (loading, errors, empty results).
-- Handle network errors effectively.
+## 📝 Description
+In this lab-style assignment, you'll build a dynamic product dashboard that expands on the concepts from Assignment 1. You'll implement advanced React patterns like `useMemo`, controlled components, conditional rendering, and derived state metrics — and you'll add a **shopping cart** to manage product selection.
 
 ---
 
-## Review
-
-Before we begin, take a few minutes to answer:
-
-### 🔹 Pop Quiz
-
-- What is .map() used for?
-- What does .map() return?
-- What parameters does .map() take?
-
-### 🔹 Checking Progress
-
-- Where are you on the Product List project?
-- What do you need to do to wrap it up?
-- What challenges have you encountered?
+## 🎯 Learning Goals
+- Use `useMemo()` to optimize performance
+- Conditionally render loading, empty, or summary states
+- Add interactivity with a shopping cart and quantity tracking
+- Decompose UI into smaller components
 
 ---
 
-## Part 1: Using useState for Form Inputs
+## 🧠 `useMemo`
+The `useMemo` hook is used to optimize performance by storing the result of an "expensive" calculation between renders.
 
-### 1.1 Import useState
-First, import useState in your component.
+📖 Read more: [React useMemo docs](https://react.dev/reference/react/useMemo)
 
-```jsx
-import { useState } from 'react';
+To calculate the total number of units and the total cost of inventory, you might do something like this:
+
+```js
+const totalUnitsInInventory = data.reduce((acc, p) => acc + p.units, 0);
+
+const totalCostOfInventory = data.reduce((acc, p) => acc + (p.units * p.price), 0);
 ```
 
-### 1.2 Create a Controlled Input
-Modify your component to manage input state:
+If this code is inside a component, it's recalculated on every render — even if `data` hasn't changed.
 
-```jsx
-function MyComponent() {
-  const [name, setName] = useState('');
+With `useMemo`, you can cache the result and specify `data` as a dependency to recalculate only when needed.
 
-  return (
-    <input 
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-    />
-  );
-}
-```
+### ✅ Challenge
+Use `useMemo` to calculate and cache the total units and total value of inventory. Use `data` as the dependency.
 
-**📌 AI Prompt:** *"What is the controlled component pattern in React?"*
+💡 **AI Prompt:**
+> "How do I use useMemo to cache a calculated value in React?"
 
-**🐞 AI Debugging Prompt:** *"Why does my input field not update when I type?"*
+> "Explain useMemo as a beginner, intermediate, and expert."
 
-### 1.3 Controlled Checkbox Example
-Modify your component to add a checkbox:
-
-```jsx
-function MyComponent() {
-  const [name, setName] = useState('');
-  const [newsletter, setNewsletter] = useState(true);
-
-  return (
-    <>
-      <input 
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input 
-        type="checkbox"
-        checked={newsletter}
-        onChange={() => setNewsletter(!newsletter)}
-      />
-    </>
-  );
-}
-```
-
-**📌 AI Prompt:** *"What’s the difference between controlling a text input vs. a checkbox in React?"*
-
-### 1.4 Why Use Controlled Components?
-- **Keeps input values in sync with React state.**
-- **Easier to manipulate form data** (e.g., validate before submission).
-- **React’s virtual DOM can replace the input component at any time**—storing input values in state prevents loss of data.
+> "Give me a list of example use cases for useMemo"
 
 ---
 
-## Part 2: Handling API Requests with React
+## 🛒 Shopping Cart
+Your goal is to create a shopping cart and integrate it with the product list from Assignment 1.
 
-Now, let's integrate an API to fetch weather data.
+### 1️⃣ Add State
+Add a state variable to hold the cart. This will be an array of items.
 
-### 2.1 Get an API Key
-- Sign up at OpenWeatherMap.
-- Go to your profile page → API Keys.
-- Copy your API key and store it in a .env file:
-
-```env
-REACT_APP_OPENWEATHERMAP_API_KEY=YOUR_API_KEY_HERE
+```js
+const [shoppingCart, setShoppingCart] = useState([]);
 ```
 
-**📌 AI Prompt:** *"What are environment variables, and why should we store API keys this way?"*
+### 2️⃣ Add to Cart
+Render each product as a card that shows name, price, and an **Add to Cart** button.
 
---- 
+When clicked, add the item to the cart. 
 
-## Part 3: Making an API Request
-
-### 3.1 Set Up useEffect to Fetch Data
-Modify your App.js file:
-
-```jsx
-import { useState, useEffect } from 'react';
-
-function WeatherApp() {
-  const [weather, setWeather] = useState(null);
-  const [zip, setZip] = useState('');
-
-  useEffect(() => {
-    if (zip.length === 5) {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${process.env.REACT_APP_OPENWEATHERMAP_API_KEY}`)
-        .then(response => response.json())
-        .then(data => setWeather(data))
-        .catch(error => console.error("Error fetching data:", error));
-    }
-  }, [zip]);
-
-  return (
-    <div>
-      <input 
-        value={zip}
-        onChange={(e) => setZip(e.target.value)}
-        placeholder="Enter ZIP code"
-      />
-      <button onClick={() => console.log(weather)}>Check Weather</button>
-    </div>
-  );
-}
-
-export default WeatherApp;
+🧩 **Note:** Updating arrays/objects in React requires creating a new copy of that object:
+```js
+setShoppingCart([...shoppingCart, newItem]);
 ```
 
-**📌 AI Prompt:** *"What does useEffect do in this code?"*
+💡 **AI Prompt:**
+> "Why doesn't React re-render when I mutate an array in state?"
 
-**🐞 AI Debugging Prompt:** *"Why does my API call fail when I enter a ZIP code?"*
+> "Why does [...shoppingCart] copy the shoppingCart array?"
 
----
+### 3️⃣ Create a Shopping Cart Component
+Create a `Cart` component. Pass it the items from state and display them as:
 
-## Part 4: Handling Network Errors Gracefully
-
-### 4.1 Add Error Handling
-Modify your fetch request to handle errors:
-
-```jsx
-useEffect(() => {
-  if (zip.length === 5) {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${process.env.REACT_APP_OPENWEATHERMAP_API_KEY}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => setWeather(data))
-      .catch(error => console.error("Failed to fetch weather data:", error));
-  }
-}, [zip]);
+#### Level 1 – Basic List
+```
+Zoolab $12.07 qty: 1
+Lotstring $185.21 qty: 1
+Fintone $190.79 qty: 1
+Zoolab $12.07 qty: 1
+Opela $29.83 qty: 1
+Opela $29.83 qty: 1
+Opela $29.83 qty: 1
 ```
 
-**📌 AI Prompt:** *"How does response.ok help in error handling?"*
-
-**🐞 AI Debugging Prompt:** *"Why am I getting a 401 Unauthorized error?"*
-
----
-
-## Part 5: Conditional Rendering
-
-### 5.1 Display Loading and Error States
-Modify your return statement:
-
-```jsx
-return (
-  <div>
-    <input 
-      value={zip}
-      onChange={(e) => setZip(e.target.value)}
-      placeholder="Enter ZIP code"
-    />
-    
-    {weather ? (
-      <div>
-        <h2>Weather: {weather.weather[0].description}</h2>
-        <p>Temperature: {Math.round(weather.main.temp - 273.15)}°C</p>
-      </div>
-    ) : (
-      <p>Enter a ZIP code to see the weather.</p>
-    )}
-  </div>
-);
+#### Level 2 – Grouped by Item
+```
+Zoolab $12.07 qty: 2
+Lotstring $185.21 qty: 1
+Fintone $190.79 qty: 1
+Opela $29.83 qty: 3
 ```
 
-**📌 AI Prompt:** *"What is conditional rendering, and why is it useful?"*
+#### ⭐ Stretch Challenge – Include Row Totals
+```
+Zoolab $12.07 qty: 2 total: $24.14
+Lotstring $185.21 qty: 1 total: $185.21
+Fintone $190.79 qty: 1 total: $190.79
+Opela $29.83 qty: 3 total: $89.49
+```
+
+💡 **AI Prompt:**
+> "How do I group duplicate items and show a total in a shopping cart in React?"
 
 ---
 
-## 💡 Stretch Challenges
-
-### 🔹 Challenge 1: Add a Loading State
-
-Show "Loading..." while the API request is in progress.
-
-### 🔹 Challenge 2: Improve Error Handling
-
-Display a user-friendly error message instead of logging to the console.
-
-### 🔹 Challenge 3: Add a Search History
-
-Save previous ZIP code searches and display them below the form.
-
-### 🔹 Challenge 4: Allow City Name Input
-
-Modify the API request to accept a city name instead of a ZIP code.
-
-### 🔹 AI Stretch Prompt: "How can I store past searches using local state?"
+## 📬 How to Submit
+1. Push your code to a GitHub repository
+2. Submit the link to GradeScope
 
 ---
 
-## **Final Thoughts**
+📎 Optional AI Prompts for Extra Help:
+- "Explain how the controlled component pattern works in React."
+- "How can I conditionally render a component in React based on state?"
+- "What’s the difference between useMemo and useEffect?"
+- "How can I use reduce to summarize values in a list?"
 
-- ✅ **The Controlled Component Pattern is used to handle forms in React projects.**
-- ✅ **In the controlled component pattern the value displayed by a form element is stored in state.**
+Good luck and happy coding! 🛍️
 
-📌 **AI Reflection Prompt:** *"Review my explanation of the Controlled Component Pattern in React. <Insert your explanation here>"*
-
----
-
-## After Class
-
-- Start working on Assignment 3.
-
-## Additional Resources
-
-- [Controlled Components](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components)
-- [Conditional Rendering in React](https://react.dev/learn/conditional-rendering)
