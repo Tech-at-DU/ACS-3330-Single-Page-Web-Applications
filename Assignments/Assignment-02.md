@@ -3,7 +3,11 @@
 ## 📝 Description
 In this assignment, you’ll build a React app that connects to the **OpenWeatherMap API** and displays real-time weather data for a given zip code. You’ll use the **controlled component pattern** for handling form input, and apply **conditional rendering** to manage asynchronous states (loading, errors, data display).
 
-**Note!** I understand that you may have built this app or a similar app in the past. If that's the case, you can use an alternative web API of your choice. The goal is to cover the learning objectives, be sure to include these in your solution! 
+**Note!** I understand that you may have built this app or a similar app in the past. If that's the case, you can:
+
+- Make an even better weather app! Look at the stretch challenges below. 
+- Use one of the other OpenWeatherMap API's, for example:  Hourly Forecast 4 days, 3-hour Forecast 5 days, Forecast 16 days, etc. 
+- Chose another alternative API. 
 
 ---
 
@@ -15,14 +19,13 @@ In this assignment, you’ll build a React app that connects to the **OpenWeathe
 ---
 
 ## 🚀 Getting Started
-Create a new React app:
-```bash
-npx create-react-app weather-api
-```
+Create a new "React" project using your favorite starter code: CRA, Vite, etc. 
+
+You also need an account with https://openweathermap.org. Once you have registered your account, find your API Key, you'llneed this later. 
 
 ---
 
-## 📦 Project Requirements
+## 📦 Video tutorials
 Follow along with the videos starting at **Lesson 03** in this playlist:
 📽️ https://www.youtube.com/playlist?list=PLoN_ejT35AEhmWcDTI6M--ha_E4lTyAtx
 
@@ -33,7 +36,7 @@ Each challenge below builds on the previous one.
 ## 🔧 Challenges
 
 ### 1️⃣ Create a Default React App
-- Scaffold a new project and test it with `npm start`
+- Scaffold a new project with your favorite React starter code (CRA, Vite, etc.)
 
 ### 2️⃣ Register with OpenWeatherMap
 - Create a free account at https://openweathermap.org/
@@ -58,18 +61,20 @@ Each challenge below builds on the previous one.
 
 ### 5️⃣ Fetch Weather Data
 - Use `fetch()` to request data based on the entered zip
-- Show the weather data after submission
+- To get started, load the weather data from OpenWeatherMap, and display it in the console, or display a value, like temperature, in your page.
 
 💡 **Stretch Goals**
 - Use `async/await`
 - Handle network errors with `.catch()` or `try/catch`
 
 🤖 **AI Research Prompts**
+- "Tell me about JS fetch(), give me a beginner, intermediate, and advanced explanation."
+- "Explain JS Promise to me."
 - "Tell me about React's useEffect hook, give a beginner, intermediate, and advanced description."
 - "How does fetch work with async/await in React?"
 - "How do I handle errors when fetching data in React?"
 
-After writing your solution to solve this problem, ask the AI to review your code. 
+**Important!** After writing your solution to solve this problem, ask the AI to review your code. 
 
 - "Review my code and give me your feedback. <paste your code here>"
 
@@ -99,17 +104,25 @@ After writing your solution to solve this problem, ask the AI to review your cod
 ---
 
 ## 🎨 Stretch Challenges
-- Style the app with CSS or a framework
+Choose any of the challenges below. 
+
 - Display more data: humidity, pressure, wind speed
+- Style the app with CSS or a CSS framework. Do your best to make your weather app look amazing! 
+  - Style the page and elements based on the weatherdata, for example: show change the background color to gray when it's raining, or dark blue at night. Get creative! 
 - Show a weather icon (e.g. `data.weather[0].icon`)
 - Add a button for **geolocation-based weather**
   - Use `navigator.geolocation.getCurrentPosition()`
   - Fetch data using OpenWeatherMap’s geolocation API
+- Use one of the other APIs supplied by OpenWeatherMap to display: 
+  - Hourly Forecast 4 days
+  - 3-hour Forecast 5 days
+  - Forecast 16 days
 
-🔐 Note: For geolocation to work, React app may need to run in HTTPS mode:
+🔐 Note: For geolocation to work, in a React app you need to run in HTTPS mode:
 ```bash
 HTTPS=true npm start
 ```
+Check the docs of your starter code to see how to handle HTTPS. 
 
 💡 **Additional Stretch Challenge Ideas**
 - Allow users to search by city name or coordinates (lat/lon)
@@ -131,13 +144,5 @@ HTTPS=true npm start
 
 ---
 
-## 📚 Resources
-- [Lesson 03 – Controlled Component Pattern](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-03.md)
-- [Lesson 06 – Callbacks and Promises](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-06.md)
-- [Lesson 07 – Fetch API](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-07.md)
-- [Lesson 05 – Conditional Rendering](https://github.com/Tech-at-DU/ACS-3330-Single-Page-Web-Applications/blob/master/Lessons/lesson-05.md)
-
----
-
-🎉 Good luck and have fun building your first weather app!
+🎉 Good luck and have fun building your weather app!
 
