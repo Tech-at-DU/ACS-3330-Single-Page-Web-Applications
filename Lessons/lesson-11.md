@@ -56,6 +56,7 @@ import { useEffect } from "react";
 function Welcome() {
   useEffect(() => {
     console.log("Component mounted");
+    // Code here runs only once when this component is mounted
   }, []); // empty dependency array
 
   return <h1>Welcome!</h1>;
@@ -75,6 +76,8 @@ function Counter() {
 
   useEffect(() => {
     console.log("Component updated");
+    // Code here runs each time this component updates
+    // For example, when the count changes
   }); // no dependency array
 
   return (
@@ -101,6 +104,7 @@ function UserProfile({ userId }) {
     console.log(`Fetching data for user ${userId}`);
     // Simulate data fetching
     setUserData({ name: "User " + userId });
+    // Code here runs only when userId Changes
   }, [userId]); // dependency: userId
 
   return <div>{userData ? userData.name : "Loading..."}</div>;
@@ -125,6 +129,7 @@ function Timer() {
     return () => {
       clearInterval(interval);
       console.log("Timer cleaned up");
+      // Code here runs when this component is unmounted
     };
   }, []);
 
@@ -133,13 +138,6 @@ function Timer() {
 ```
 
 ---
-
-Yes! Here's a single React component that brings all the `useEffect` patterns together in a meaningful way. It simulates a **user dashboard** that:
-
-- Loads data when the component mounts
-- Responds to prop or state changes
-- Cleans up a timer when it unmounts
-- Logs updates on every render (so you can *see* it's updating)
 
 **Challenge:** Test the examples for yourself. 
 
@@ -150,6 +148,7 @@ Yes! Here's a single React component that brings all the `useEffect` patterns to
 ---
 
 ### 🧠 **Example: `UserDashboard` component**
+Add this component to a React project to test `useEffect` and try the ideas described above. 
 
 ```jsx
 import { useEffect, useState } from "react";
@@ -214,6 +213,57 @@ function UserDashboard({ userId }) {
 }
 ```
 
+**Challenge 1:**
+Create a new component with the code above. Open the console and refresh. You should see, something like: 
+
+```
+[Log] 1) Component mounted (UserDashBoard.jsx, line 25)
+[Log] 3) Component updated (UserDashBoard.jsx, line 39)
+[Log] 4) User ID changed to EdamameBean (UserDashBoard.jsx, line 42)
+[Log] 2) Cleaning up timer... (UserDashBoard.jsx, line 34)
+[Log] 1) Component mounted (UserDashBoard.jsx, line 25)
+[Log] 3) Component updated (UserDashBoard.jsx, line 39)
+[Log] 4) User ID changed to EdamameBean (UserDashBoard.jsx, line 42)
+[Log] 3) Component updated (UserDashBoard.jsx, line 39)
+```
+
+Find these comments in the component. Notice some of the commonents appear twice! Ask the AI:
+
+- "When I log messages from react components they almost always appear twice in the console, why is that?"
+
+Try removing the doubled comments...
+
+**Challenge 2:**
+Notice that comment "Cleaning up timer..." never appears. This should happen when the component is unmounted. To make this happen you need the `<UserDashboard />` component to be conditionally rendered, and to be able to toggle this! 
+
+Add a button that allows you to show and hide the `<UserDashbaord />` component. 
+
+With this in place, you should see messages telling you the component mounted and unmounted is you toggle its display. 
+
+**Challenge 3:**
+There is a possibility for problems! "Stale Closure" is a problem that can happen with `useEffect`. 
+
+Change: 
+
+```JS
+const interval = setInterval(() => {
+  setTick(t => t + 1); // Trigger re-renders every second
+}, 1000);
+```
+
+To: 
+
+```JS
+const interval = setInterval(() => {
+  setTick(tick + 1); // Trigger re-renders every second
+}, 1000);
+```
+
+Testing this, the timer is no longer counting! Ask the AI: 
+
+- "Explain "stale closure", what is it, why does it occur, and how can I resolve it?"
+- "<provide the two code snippets above> What is the difference between these two code snippets?"
+
 ---
 
 ### 💡 What's happening:
@@ -227,197 +277,5 @@ function UserDashboard({ userId }) {
 
 ---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----
-
-## **Example 1**
-
-```sh
-npx create-react-app live-weather-dashboard
-cd live-weather-dashboard
-npm start
-```  
-They’ll install **dotenv** for managing API keys:  
-```sh
-npm install dotenv
-```  
-Then, create a `.env` file in the root folder:  
-```
-REACT_APP_WEATHER_API_KEY=your_openweathermap_api_key
-```
-
----
-
-# **Part 1: `useEffect` on Mount – Fetch Weather Data When App Loads**  
-The first effect **runs only once** when the app loads.  
-
-### **✏️ Add Initial Fetch in `WeatherDashboard.js`**
-```jsx
-import { useState, useEffect } from "react";
-
-function WeatherDashboard() {
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [city, setCity] = useState("London");
-
-  useEffect(() => {
-    console.log("Fetching weather data on mount...");
-
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`)
-      .then(response => response.json())
-      .then(data => {
-        setWeather(data);
-        setLoading(false);
-      })
-      .catch(error => console.error("Error fetching data:", error));
-  }, []); // Runs only once on mount
-
-  return (
-    <div>
-      {loading ? <p>Loading weather...</p> : <p>Weather: {weather.weather[0].description}</p>}
-    </div>
-  );
-}
-
-export default WeatherDashboard;
-```
-
-📌 **AI Debugging Prompt:** *"Why does `useEffect` only run once when the component mounts?"*  
-
----
-
-# **Part 2: `useEffect` with Dependency – Update Weather When City Changes**  
-The next effect **runs when the city changes**.
-
-### **✏️ Modify `useEffect` to Fetch Weather on City Change**
-```jsx
-useEffect(() => {
-  console.log(`Fetching weather for ${city}...`);
-
-  setLoading(true);
-  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`)
-    .then(response => response.json())
-    .then(data => {
-      setWeather(data);
-      setLoading(false);
-    })
-    .catch(error => console.error("Error fetching data:", error));
-}, [city]); // Runs whenever `city` changes
-```
-
-📌 **AI Debugging Prompt:** *"How does adding `city` as a dependency affect when `useEffect` runs?"*  
-
----
-
-# **Part 3: `useEffect` for Updates – Polling for Weather Every 10 Seconds**  
-Now, students will **fetch updated weather every 10 seconds**.
-
-### **✏️ Modify `useEffect` for Polling**
-```jsx
-useEffect(() => {
-  console.log("Starting weather update interval...");
-
-  const intervalId = setInterval(() => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`)
-      .then(response => response.json())
-      .then(data => {
-        setWeather(data);
-        console.log("Weather updated!");
-      })
-      .catch(error => console.error("Error fetching data:", error));
-  }, 10000); // Runs every 10 seconds
-
-  return () => {
-    console.log("Cleaning up interval...");
-    clearInterval(intervalId); // Cleanup when component unmounts
-  };
-}, [city]); // Runs when `city` changes
-```
-
-📌 **AI Debugging Prompt:** *"Why do we need `clearInterval(intervalId)`? What happens if we forget it?"*  
-
----
-
-# **Part 4: `useEffect` on Unmount – Cleanup Side Effects**  
-To prevent memory leaks, we’ll **reset the interval when switching cities**.
-
-📌 **Key Concept:** **Every time `city` updates, a new `setInterval` starts. The old one must be removed!**
-
----
-
-# **Part 5: Dynamic Background Color Based on Weather**
-Now, students will change the **background color** dynamically based on the weather condition.
-
-### **✏️ Modify `useEffect` to Change the Background**
-```jsx
-useEffect(() => {
-  if (!weather) return;
-
-  const condition = weather.weather[0].main;
-  let bgColor = "white";
-
-  if (condition === "Clear") bgColor = "lightblue";
-  if (condition === "Rain") bgColor = "gray";
-  if (condition === "Snow") bgColor = "lightgray";
-
-  document.body.style.backgroundColor = bgColor;
-
-  return () => {
-    document.body.style.backgroundColor = "white"; // Reset when unmounting
-  };
-}, [weather]); // Runs when `weather` changes
-```
-
-📌 **AI Prompt:** *"How can I improve this background color logic?"*  
-
----
-
-# **💡 Stretch Challenges (Combine with OpenWeather API Assignment)**  
-### **💡 Challenge 1: Allow Users to Enter a City**
-- Modify the app to **let users type a city name** instead of hardcoding "London".
-
-### **💡 Challenge 2: Show a "Last Updated" Timestamp**
-- Display the **time of the last API request**.
-
-### **💡 Challenge 3: Cache Previous API Requests**
-- If a user enters the **same city twice**, **reuse old data** instead of making a new request.
-
-### **💡 Challenge 4: Convert Temperature to Fahrenheit**
-- The OpenWeather API returns temperature in **Kelvin**. Convert it to Fahrenheit before displaying.
-
-### **💡 Challenge 5: Add a "Weather History" Feature**
-- Store **past 5 weather results** and allow users to click on them.
-
-📌 **AI Stretch Prompt:** *"How can I store the weather history in local storage so it persists across page reloads?"*
-
----
-
-## **Final Thoughts**
-- `useEffect` **controls when side effects happen** in React.  
-- Cleanup functions **prevent memory leaks** and improve performance.  
-- `useEffect` is essential for **fetching data, event listeners, and background updates**.  
-
-📌 **AI Reflection Prompt:** *"Review my explanation of the useEffect hook. <You explain the useEffect hook in your own words>."* 
-
----
-
-## **📚 After Class**
-- **Complete the Weather project**.  
-- Review **React’s Official Docs on `useEffect`**: [React Docs](https://react.dev/reference/react/useEffect).  
+## Lab Assignment
+Answer todays questions on Gradscope: Lab 2 - useEffect.
