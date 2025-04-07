@@ -42,8 +42,10 @@ if (true) {
 }
 
 {
-  let c = 88;
+  let c = 88; // Block scope (note! this is not an object!)
 }
+
+console.log(a, b, c) // What happens here? 
 ```
 
 📌 **AI Prompt:** *"What happens if you try to access `a`, `b`, and `c` outside their scopes?"*
@@ -52,7 +54,7 @@ if (true) {
 
 ---
 
-# **Part 1: Closures as Callback Functions**
+# **Part 1: Closures and Functions**
 
 A **closure** happens when a function **remembers** variables from its parent function, even after the parent function has returned.
 
@@ -71,6 +73,12 @@ function makeCounter() {
 const counter1 = makeCounter();
 console.log(counter1()); // 1
 console.log(counter1()); // 2
+console.log(counter1()); // 3
+
+// Challenge: Make a second counter, what happens here?
+// const counter2 = makeCounter();
+// console.log(counter2()); // ?
+// console.log(counter2()); // ?
 ```
 
 ✅ **Concept:** The **inner function** has access to `count`, even after `makeCounter()` has returned.
@@ -101,9 +109,14 @@ buttons[2](); // 3
 ✅ **Fix:** Use **`let`** (block-scoped) or an **IIFE (Immediately Invoked Function Expression)**:
 
 ```js
+// Note! var has become let here! 
 for (let i = 0; i < 3; i++) {
   buttons.push(() => console.log(i));
 }
+// Now what happens?
+buttons[0](); // ?
+buttons[1](); // ?
+buttons[2](); // ?
 ```
 
 📌 **AI Debugging Prompt:** *"What happens if we replace `var` with `let`?"*
