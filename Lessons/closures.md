@@ -4,6 +4,49 @@
 
 ---
 
+This is a great start! You're clearly encouraging students to *actively engage* with AI, not passively rely on it—which is key to real learning. Here’s some specific feedback and suggestions to improve clarity, structure, and pedagogical impact:
+
+## ⚡ AI-Powered Learning Challenge
+
+AI can help clarify concepts, review code, and push your thinking—but only if you engage with it critically. Here are two exercises to practice:
+
+### 🧠 1. Check Your Understanding
+Pick a concept we’ve covered so far—like `useState`, `useEffect`, or React props.
+
+**Prompt:**  
+```
+Check my understanding of <concept>. <Write your explanation here>
+```
+
+> ✅ After AI responds: Does the feedback confirm your understanding? What surprised you? Did you learn something new?
+
+### 🔍 2. Code Review
+Grab a code snippet you’ve written recently.
+
+**Prompt:**  
+```
+Code review and give me feedback on this code I have written: <your code>
+```
+
+> ✅ After AI responds: Do you agree with the feedback? Can you explain the reasoning behind any suggested changes?
+
+---
+
+### 4. **Optional Bonus: Debugging Drill**
+Help students see AI as a debugging ally:
+
+**Prompt:**  
+```
+I'm getting this error: <error>. Here's the code: <code>. What's going wrong and how can I fix it?
+```
+
+---
+
+### 📘 Final Tip
+Always ask yourself: *Do I understand the “why” behind the AI’s response?* If not, dig deeper. That’s where real learning happens.
+
+---
+
 ## **Overview**
 
 Closures are a **fundamental concept in JavaScript** that allow functions to **remember variables from their original scope** even after they have executed.
