@@ -16,9 +16,9 @@ Closures are important for:
 - **Understanding React behavior** (fixing stale closures in `useEffect`).
 
 By the end of this lesson, you will be able to:
-✅ **Define closures** and explain how they work.
-✅ **Use closures in everyday programming** for state management.
-✅ **Fix stale closures in React applications**.
+- ✅ **Define closures** and explain how they work.
+- ✅ **Use closures in everyday programming** for state management.
+- ✅ **Fix stale closures in React applications**.
 
 ---
 
@@ -202,6 +202,25 @@ useEffect(() => {
 ```
 
 📌 **AI Prompt:** *"How does `useCallback` prevent stale closures in React?"*
+
+--- 
+
+### **Fix 4: Use set state callback to Prevent Stale Closures**
+
+In cases where you are setting state within a clsoure, you can provide a callback as the argument to your set state function. This callback receives the latest value of state. 
+
+```jsx
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCount(prev => { // prev is the latest value for count
+      console.log(`Count is: ${prev}`);
+      return prev;
+    });
+  }, 2000);
+
+  return () => clearInterval(interval);
+}, []);
+```
 
 ---
 
