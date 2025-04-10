@@ -221,6 +221,7 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 ```
+📌 **AI Prompt:** *"Explain set state callback for React `useState`"*
 
 ---
 
