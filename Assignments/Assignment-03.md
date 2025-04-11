@@ -62,7 +62,15 @@ Your goal is to **select and complete one of the tutorials** listed below. The t
 - **Test your understanding** by explaining key Redux concepts aloud or writing them down.  
 - If you get stuck, **post your questions in the class Slack channel**.  
 
-📌 **AI Debugging Prompt:** *"I’m stuck on this Redux error. Can AI help me troubleshoot?"*
+📌 **AI Debugging Prompt:** *"I’m stuck on this Redux <error>. Can AI help me troubleshoot?"*
+
+📌 **AI Debugging Prompt:** *"I'm learning Redux, explain Redux in three levels: beginner, intermediate, and advanced"*
+
+📌 **AI Debugging Prompt:** *"How does Redux Toolkit expand Redux?"*
+
+📌 **AI Debugging Prompt:** *"Give me feedback on explaination of Redux: <your explantion of redux>"*
+
+📌 **AI Debugging Prompt:** *"Give me a code review. <provide some code>"*
 
 ---
 
