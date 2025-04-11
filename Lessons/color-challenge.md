@@ -7,7 +7,7 @@ This challenge is adapted from Client.dev and designed to test your knowledge of
 Your goal is to build a color guessing game:
 
 - Display **three random color swatches** (100px x 100px squares).
-- Below the swatches, show the **hex value** of *one* of them.
+- Show the **hex value** of *one* of them.
 - When a swatch is clicked:
   - If it matches the displayed hex color, show **"correct"**.
   - Otherwise, show **"incorrect"**.
