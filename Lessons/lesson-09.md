@@ -1,304 +1,272 @@
-# FEW 2.3 - Lesson 9
+# 🧱 ACS 3330 – Lesson 9: Advanced Redux with Redux Toolkit
 
-# Redux Toolkit
+## 📝 Overview
+In this lesson, you'll reinforce Redux fundamentals and learn how to streamline state management using **Redux Toolkit**. You'll convert traditional Redux patterns into slices, handle asynchronous logic with `createAsyncThunk`, and build a clean architecture using multiple slices.
 
-Redux Toolkit is the officially endorsed Redux integration for create-react-app projects. They describe themselves as: 
+---
 
-> The official, opinionated, batteries-included toolset for efficient Redux development
+## 🎯 Learning Goals
+- Refactor a basic reducer into a slice using `createSlice`
+- Handle asynchronous data fetching using `createAsyncThunk`
+- Manage multiple slices in a Redux store
+- Build selectors to derive computed state
+- Apply Redux best practices for scalable apps
+- Understand and apply the concept of **unidirectional data flow**
+- Understand the concept of a **reducer** from a computer science perspective
 
-Check out the website: https://redux-toolkit.js.org
+---
 
-<!-- > -->
+## The problems and solution
+Flux and Redux were created to solve a problem. The simple approach is to store application state as component state. This entails lifting state to a parent component so it can be passed down to child components. 
 
-## Review: Redux
+![state](./images/01-props.png)
 
-<!-- > -->
+The image above shows how state, stored in App, might have to be passed as props to child components down the component tree. 
 
-What do you remember about the first discussion of redux? 
+Another headache for React developers is passing data up the component tree. Its easy to pass data down the tree via props. Passing data up the tree most often requires a function be passed down that executes at parent component. 
 
-<!-- > -->
+![up-the-chain](./images/02-up-chain.png)
 
-What is an action? 
+## The solution
 
-<!-- > -->
+In a Redux app state is placed in the store, which sits outside of the component tree. Any component can access the store directly, without passing props. 
 
-What is a reducer?
+![store](./images/03-redux-store.png)
 
-<!-- > -->
+## Redictable Date
+Redux describes itself as a "redictable state container". Changes to state can only be made by sending actions, and these actions are all processed in order. 
 
-What is the store?
+![actions](./images/04-redux-action.png)
 
-<!-- > -->
+--- 
 
-Review the Redux concepts: 
+## 1️⃣ Recap: Redux Fundamentals
 
-The Store:
+### 🔐 Single Source of Truth
+Redux applications are built on the principle of having a **single source of truth** — one central store that holds all application state.
 
-![The store](images/03-redux-store.png)
+Why this matters:
+- It allows consistent, centralized access to state from any component.
+- It avoids bugs caused by duplicated or out-of-sync state.
+- It simplifies debugging and testing by isolating where and how state changes.
 
-Actions:
+In Redux, the `store` acts as this single source, and all state changes flow through reducers.
 
-![actions](images/04-redux-action.png)
+💡 **AI Prompt:** "What is a single source of truth in state management and why is it important?"
 
-Key concepts: 
+### 🔁 What is Unidirectional Data Flow?
+Unidirectional data flow is a design pattern where **data moves in a single direction** throughout the app. In Redux, this helps maintain predictable state changes and makes debugging easier.
 
-- The store lives outside your component tree
-- Components get values from the store directly
-- To change state a component sends an action
+Here’s how it works:
+1. A user **interacts with the UI** (clicks a button, types into a form)
+2. The UI **dispatches an action** describing the intent (e.g., `ADD_ITEM`)
+3. A **reducer handles the action** and returns new state
+4. The **store is updated**, and any components that depend on that state re-render
 
-## Redux 
+This loop looks like:
+```
+UI → dispatch → reducer → store → UI
+```
 
-Redux is an application state management library. They describe as: 
+Because each step is isolated and data flows in only one direction, it becomes much easier to trace bugs, write tests, and reason about state in your app.
 
-> A Predictable State Container for JS Apps
+💡 **AI Prompt:** “What are the benefits of unidirectional data flow in large applications?”
 
-Check out their website: https://redux.js.org
+- A Redux store holds global application state
+- Components dispatch **actions** that describe state changes
+- **Reducers** return new state based on action type and payload
+- Components access state with `useSelector`
+- Redux follows a **unidirectional data flow** model:
+  ```
+  UI → dispatch → reducer → store → UI
+  ```
 
-To use redux you need to create a store object. To create the store you need to define some reducers. A reducer is used to manage a "piece" of the application state. A piece of state is a value that you are storing in the store. Each "piece" of state will have a reducer that is responsible for updating that "piece."
+### 🧠 What is a Reducer?
+In computer science, a **reducer** is a type of function that takes a collection (like an array) and "reduces" it to a single result by applying a transformation. In JavaScript, you've used this pattern with `.reduce()`:
 
-Imagine you were creating a todo app and the application state was an array of todo objects. You might define "todosRedcuer" as handled adding, removing, and updating todo items in the array. 
+```js
+const total = numbers.reduce((acc, value) => acc + value, 0)
+```
 
-Changes to state are made by sending actions. An action has a type and a payload. In the todos example, you might send a "createTodo" action, with a payload that is the name of the thing you want to that appears on the list like: "do laundry."
+In Redux, a **reducer** is a pure function that:
+- Takes the current state and an action
+- Returns a new version of the state (if the state is changed)
 
-- Redux has a store where all of the state is stored
-- Reducers handle changes to state
-- Actons are sent to the store when you want to make a change
-- A payload is included with an action it has the data needed to make the change
+📌 **Important:** In Redux, you must return a new version of the state if it is modified. Simply mutating the existing state will not trigger updates.
 
-## React-Redux 
+💡 However, **Redux Toolkit** uses the **Immer** library under the hood, which allows you to write code that appears to mutate state directly, while safely creating new immutable state behind the scenes.
 
-React Redux is a library that acts as the glue or conduit that connects React and Redux. 
+This pattern ensures that state changes are **predictable**, **testable**, and **traceable**.
 
-React Redux gives us a Provider component and some react hooks. The provider component and hooks are what allow your components to communicate with the store. 
+💡 **AI Prompt:** “What makes a Redux reducer pure?”
+💡 **AI Prompt:** “What is unidirectional data flow and why is it useful in Redux?”
+💡 **AI Prompt:** “What is a reducer in functional programming, and how does it apply to Redux?”
 
-You will always wrap your top-level component, usually App, in the `<Provider>` component. The provider takes the store as a prop. Something like this: 
+---
 
-```JS
+## 2️⃣ Why Redux Toolkit?
+Redux Toolkit (RTK) reduces boilerplate and encourages best practices:
+- `configureStore()` simplifies store setup
+- `createSlice()` automatically generates action creators and reducers
+- `createAsyncThunk()` handles async logic like API calls
+
+📚 Learn more: [Redux Toolkit Docs](https://redux-toolkit.js.org/)
+
+💡 **AI Prompt:** “How does createSlice simplify Redux logic?”
+
+---
+
+## 3️⃣ Refactor a Reducer with `createSlice`
+Start with a basic `cartReducer` and refactor into a slice:
+
+```js
+// redux/cartSlice.js
+import { createSlice } from '@reduxjs/toolkit'
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: [],
+  reducers: {
+    addItem: (state, action) => {
+      state.push(action.payload)
+    },
+    removeItem: (state, action) => {
+      return state.filter(item => item.id !== action.payload.id)
+    }
+  }
+})
+
+export const { addItem, removeItem } = cartSlice.actions
+export default cartSlice.reducer
+```
+
+📌 Redux Toolkit uses **Immer** internally to allow “mutating” state safely.
+
+---
+
+## 4️⃣ Handle Async with `createAsyncThunk`
+Use `createAsyncThunk` to fetch data from an API (e.g. product list).
+
+```js
+// redux/productsSlice.js
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+
+export const fetchProducts = createAsyncThunk('products/fetch', async () => {
+  const res = await fetch('https://fakestoreapi.com/products')
+  return await res.json()
+})
+
+const productsSlice = createSlice({
+  name: 'products',
+  initialState: {
+    items: [],
+    status: 'idle',
+    error: null
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        state.items = action.payload
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
+  }
+})
+
+export default productsSlice.reducer
+```
+
+💡 **AI Prompt:** “How do I use createAsyncThunk in Redux Toolkit?”
+
+---
+
+## 5️⃣ Configure the Store
+
+```js
+// redux/store.js
+import { configureStore } from '@reduxjs/toolkit'
+import cartReducer from './cartSlice'
+import productsReducer from './productsSlice'
+
+export const store = configureStore({
+  reducer: {
+    cart: cartReducer,
+    products: productsReducer
+  }
+})
+```
+
+Then wrap your app with the Redux provider:
+```js
+import { Provider } from 'react-redux'
+import { store } from './redux/store'
+
 <Provider store={store}>
   <App />
 </Provider>
 ```
 
-The code above came from `index.js` in my React project. 
+---
 
-## React Toolkit
+## 6️⃣ Build a Mini Product Store
 
-React Toolkit provides utilities and a framework to use Redux in React projects. It's here that you will define the reducers and actions that we talked about above! 
+### Components to build:
+- `ProductList`: displays all products
+- `Cart`: displays items in cart with totals
+- `ProductRow`: displays a single product with Add to Cart button
 
-Redux Toolkit divides state into "slices." Think of a slice of the initial value for a piece of state, the action, and the reducer to manage that piece. 
+### Features:
+- Products fetched via `createAsyncThunk`
+- Cart managed via `createSlice`
+- Totals computed with `useSelector` + `reduce`
+- Loading and error states displayed
 
-You would start defining a slice with `createSlice`. 
+💡 **AI Prompt:** “How do I calculate total cost in Redux with useSelector?”
 
-Start with `createSlice`. Look for this code in the tutorial projects. They all implement Redux Toolkit! Every slice needs a name. You create a slice with the `createSlice` function and supply an object to configure it. 
+---
 
-```JS
-import { createSlice } from '@reduxjs/toolkit'
+## 7️⃣ Stretch Topics (Optional)
+- Use `createEntityAdapter` for normalized product data
+- Add quantity support in cart reducer
+- Persist store to `localStorage`
+- Create reusable selectors for computed values
 
-export const todosSlice = createSlice({
-  name: 'todos'
-})
-```
+📌 Explore: [createEntityAdapter](https://redux-toolkit.js.org/api/createEntityAdapter)
 
-Every slice needs an initial value. Imagine the todos app. If todos are stored in an array. The initial value for this slice might be an empty array. 
+---
 
-```JS
-import { createSlice } from '@reduxjs/toolkit'
+## ✅ Recap: What You Learned
+| Concept            | Tool/Pattern |
+|--------------------|--------------|
+| Action Creators    | `createSlice()` |
+| Async API Fetching | `createAsyncThunk()` |
+| Store Setup        | `configureStore()` |
+| State Access       | `useSelector()` |
+| Dispatching Actions| `useDispatch()` |
+| Data Flow Model    | Unidirectional flow |
+| Reducer Pattern    | Functional reducer logic |
 
-const initialState = {
-  value: []
-}
+💡 **AI Prompt:** “What’s the best way to structure slices in a large Redux app?”
 
-export const todosSlice = createSlice({
-  name: 'todos', 
-  initialState, 
-})
-```
+---
 
-A slice needs to define some reducers. 
+## 🧪 Challenge Project: Product Store
+Create a small product store app using:
+- `createSlice()` for cart logic
+- `createAsyncThunk()` for loading products
+- Display loading and error states
+- Show totals in cart using `reduce`
 
-```JS
-import { createSlice } from '@reduxjs/toolkit'
+---
 
-const initialState = {
-  value: []
-}
-
-export const todosSlice = createSlice({
-  name: 'todos', 
-  initialState, 
-  reducers: {
-
-  }
-})
-```
-
-Notice how a reducer is an object. Each of the properties/keys on the reducers object will be functions that handle changes to state. 
-
-```JS
-import { createSlice } from '@reduxjs/toolkit'
-
-const initialState = {
- value: []
-}
-
-export const todosSlice = createSlice({
-  name: 'todos', 
-  initialState, 
-  reducers: {
-    addTodo: (state, action) => {
-      state.value.push( { doWhat: action.payload, completed: false, date: new Date() } ) 
-    },
-  }
-})
-```
-
-Here I added `addTodo` action. The function takes two parameters: `state` and `action`. `state` is the array from `initialState` and an action is an object with a `payload` property. Imagine the payload is the name of a new todo item that needs to be added to the todos array, something like "wash the dog." I added a couple of extra items to the todo object to make a realistic example. The object pushed into `state.value` would be a new todo item in our array. 
-
-The function `(state, action) => { state.value.push(...)}` is the reducer, and `addTodo` is the action! 
-
-The last step is to export the actions and reducer, like this: 
-
-```JS
-import { createSlice } from '@reduxjs/toolkit'
-
-const initialState = {
-  value: []
-}
-
-export const todosSlice = createSlice({
-  name: 'todos', 
-  initialState, 
-  reducers: {
-    addTodo: (state, action) => {
-      state.value.push( { doWhat: action.payload, completed: false, date: new Date() } ) 
-    },
-  }
-})
-
-export const { addTodo } = timersSlice.actions
-export default todosSlice.reducer
-```
-
-Notice how you export the action and the reducer. 
-
-What if you need to remove a todo from the array? You need to define a new action and a new reducer. To remove an item from an array we need to know its index. In this case, the index might be the payload. 
-
-```JS
-export const todosSlice = createSlice({
-  name: 'todos', 
-  initialState, 
-  reducers: {
-    addTodo: (state, action) => {
-      state.value.push( { doWhat: action.payload, completed: false, date: new Date() } ) 
-    },
-    removeTodo: (state, action) => {
-      state.value.splice(acton.payload, 1) // removes 1 item at index payload
-    }
-  }
-})
-```
-
-Here is a new action `removeTodo` with a new reducer. The reducer always takes `state` and `action` as parameters. Every reducer you define will take these two parameters! 
-
-The last step is to export the action
-
-```JS
-export const { addTodo, removeTodo } = timersSlice.actions
-```
-
-## React Redux Hooks
-
-I mentioned React Redux supplied some hooks. The two most common hooks you will use are: `useSelector` and `useDispatch`
-
-**useSelector**
-
-Imagine you wanted to display the list of todos in a component. 
-
-```JS
-import { useSelector } from 'react-redux'
-import TodoView from './TodoView'
-
-export default function ListTodos() {
-  const todos = useSelector(state => state.todos.value)
-  
-  return // display some todo items here...
-}
-```
-
-`useSelector` takes a call back that receives your redux state. Since we want the todos we get them with `state.todos.value`. Compare this to the `initialState` that was defined in the example above. Since `todos` is an array you could map it to components. 
-
-**useDispatch**
-
-Imagine you want to create a new todo. For this, you need to send an action to the dispatcher. Import the action and the `useSelector` hook. 
-
-```JS
-import { useDispatch } from 'react-redux'
-import { addTodo } from '../features/timers/todosSlice'
-
-export default function NewTodo() {
-  const [ name, setName ] = useState('')
-  const dispatch = useDispatch()
-
-  return (
-    <div>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}/>
-      <button
-        onClick={() => dispatch(addTodo( name ))}
-      >Save</button>
-    </div>
-  )
-}
-```
-
-First I imported `useDipatch` and `addTodo`. I need `useDispatch` to "dispatch" actions and I need the action I exported from the slice above. 
-
-Here I used the React controlled component pattern to enter a "name" in an input. I used the state variable `name` to hold the name. 
-
-In the component, I called `useDispatch` and it returns a function that is used to dispatch actions. 
-
-Dispatch an action by calling the action and providing the payload as the argument. This returns the action object. Call the `dispatch` function and provide the action object as an argument. You could break this down like this: 
-
-```JS
-<button
-  onClick={() => {
-    const action = addTodo( name ) // name is the payload
-    dispatch( action ) // call dispatch with an action
-  }}
->Save</button>
-```
-
-## Review
-
-- Redux is an application state management library
-- Redux Toolkit is the official library to integrate redux with react
-- Redux Toolkit divides state into slices
-- A slice is made up of
-  - initial state 
-  - actions
-  - and reducers
-- Actions are "messages" that you send to make changes to state
-- Reducers are where changes to state occur
-- React Redux provides components and hooks that work with redux
-- The `Provider` component makes the hooks work
-- `useSelector` gives your component access to redux state
-- `useDispatch` allows your components to send actions
-
-## After Class
-
-The goal for today is to have a React Project with Redux. It doesn't have to be fully functional and may need changes, but it should have redux installed and functional. 
-
-- Install Redux
-- Add Actions
-- Add Reducers
-- Combine Reducers
-- Create Store
-
-Submit your work to grade scope. 
-
-## Additional Resources
-
-- https://redux.js.org
-- https://redux-toolkit.js.org
-
+## 📚 Resources
+- [Redux Toolkit Docs](https://redux-toolkit.js.org/)
+- [Redux Fundamentals Tutorial](https://redux.js.org/tutorials/fundamentals/part-1-overview)
+- [React Redux Quick Start](https://react-redux.js.org/introduction/quick-start)
