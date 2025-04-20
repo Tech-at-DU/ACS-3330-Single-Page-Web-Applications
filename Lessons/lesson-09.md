@@ -109,6 +109,8 @@ Watch teh animation and find these things!
 
 💡 **AI Prompt:** “In Dedux what is a reducer?”
 💡 **AI Prompt:** “In Redux what is an action?”
+💡 **AI Prompt:** “In Redux how does an action change state?”
+💡 **AI Prompt:** “In Redux can state be chnaged without an action?”
 💡 **AI Prompt:** “What makes a Redux reducer pure?”
 💡 **AI Prompt:** “What is unidirectional data flow and why is it useful in Redux?”
 💡 **AI Prompt:** “What is a reducer in functional programming, and how does that apply to Redux?”
@@ -138,8 +140,9 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const cartSlice = createSlice({
   name: 'cart',
-  initialState: [],
+  initialState: [], // initial state is an empty array
   reducers: {
+    // This slice has two 
     addItem: (state, action) => {
       state.push(action.payload)
     },
@@ -155,15 +158,23 @@ export default cartSlice.reducer
 
 📌 Redux Toolkit uses **Immer** internally to allow “mutating” state safely.
 
+💡 **AI Prompt:** “What does immutable mean in computer science?”
+💡 **AI Prompt:** “In redux is state immutable?”
+💡 **AI Prompt:** “In redux why is state immutable?”
+
 ---
 
 ## 4️⃣ Handle Async with `createAsyncThunk`
+Asynchronous actions in Redux are handled in a special way, using a "thunk". 
+
 Use `createAsyncThunk` to fetch data from an API (e.g. product list).
 
 ```js
 // redux/productsSlice.js
+// Import createAsyncThunk
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+// Use createAsyncThunk to create an async thunk
 export const fetchProducts = createAsyncThunk('products/fetch', async () => {
   const res = await fetch('https://fakestoreapi.com/products')
   return await res.json()
@@ -179,6 +190,7 @@ const productsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // handle your thunk in extraReducers...
       .addCase(fetchProducts.pending, (state) => {
         state.status = 'loading'
       })
@@ -197,6 +209,7 @@ export default productsSlice.reducer
 ```
 
 💡 **AI Prompt:** “How do I use createAsyncThunk in Redux Toolkit?”
+💡 **AI Prompt:** “What is a Thunk in computer science?”
 
 ---
 
