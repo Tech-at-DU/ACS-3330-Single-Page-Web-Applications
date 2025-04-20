@@ -38,7 +38,7 @@ Redux describes itself as a "redictable state container". Changes to state can o
 
 ![actions](./images/04-redux-action.png)
 
---- 
+---
 
 ## 1️⃣ Recap: Redux Fundamentals
 
@@ -101,6 +101,8 @@ This pattern ensures that state changes are **predictable**, **testable**, and *
 💡 **AI Prompt:** “What makes a Redux reducer pure?”
 💡 **AI Prompt:** “What is unidirectional data flow and why is it useful in Redux?”
 💡 **AI Prompt:** “What is a reducer in functional programming, and how does it apply to Redux?”
+
+![redux-action](https://redux.js.org/assets/images/ReduxDataFlowDiagram-49fa8c3968371d9ef6f2a1486bd40a26.gif)
 
 ---
 
