@@ -98,11 +98,22 @@ In Redux, a **reducer** is a pure function that:
 
 This pattern ensures that state changes are **predictable**, **testable**, and **traceable**.
 
+![redux-action](https://redux.js.org/assets/images/ReduxDataFlowDiagram-49fa8c3968371d9ef6f2a1486bd40a26.gif)
+
+The image above shows: 
+- An event dispatches an action
+- The action and state are passed the reducer, which updates state
+- Updated state is passed to the user interface
+
+Watch teh animation and find these things! 
+
+💡 **AI Prompt:** “In Dedux what is a reducer?”
+💡 **AI Prompt:** “In Redux what is an action?”
 💡 **AI Prompt:** “What makes a Redux reducer pure?”
 💡 **AI Prompt:** “What is unidirectional data flow and why is it useful in Redux?”
-💡 **AI Prompt:** “What is a reducer in functional programming, and how does it apply to Redux?”
+💡 **AI Prompt:** “What is a reducer in functional programming, and how does that apply to Redux?”
 
-![redux-action](https://redux.js.org/assets/images/ReduxDataFlowDiagram-49fa8c3968371d9ef6f2a1486bd40a26.gif)
+
 
 ---
 
