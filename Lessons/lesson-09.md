@@ -33,7 +33,7 @@ In a Redux app state is placed in the store, which sits outside of the component
 
 ![store](./images/03-redux-store.png)
 
-## Redictable Date
+## Redictable Data
 Redux describes itself as a "redictable state container". Changes to state can only be made by sending actions, and these actions are all processed in order. 
 
 ![actions](./images/04-redux-action.png)
