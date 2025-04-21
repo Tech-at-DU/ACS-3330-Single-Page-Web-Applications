@@ -170,46 +170,49 @@ Asynchronous actions in Redux are handled in a special way, using a "thunk".
 Use `createAsyncThunk` to fetch data from an API (e.g. product list).
 
 ```js
-// redux/productsSlice.js
-// Import createAsyncThunk
+redux/weatherSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-// Use createAsyncThunk to create an async thunk
-export const fetchProducts = createAsyncThunk('products/fetch', async () => {
-  const res = await fetch('https://fakestoreapi.com/products')
+// This is your async action
+export const fetchWeather = createAsyncThunk('weather/fetch', async (zip) => {
+  const apikey = import.meta.env.VITE_API_KEY
+  const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=imperial`)
   return await res.json()
 })
 
-const productsSlice = createSlice({
-  name: 'products',
+const weatherSlice = createSlice({
+  name: 'weather',
   initialState: {
-    items: [],
+    weather: null,
     status: 'idle',
     error: null
   },
   reducers: {},
+  // Async actions are handled in extraReducer
   extraReducers: (builder) => {
+    // Add cases for states pending, fulfilled, and rejected
     builder
-      // handle your thunk in extraReducers...
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(fetchWeather.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(fetchWeather.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.items = action.payload
+        state.weather = action.payload
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchWeather.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })
   }
 })
 
-export default productsSlice.reducer
+export default weatherSlice.reducer
 ```
 
 💡 **AI Prompt:** “How do I use createAsyncThunk in Redux Toolkit?”
 💡 **AI Prompt:** “What is a Thunk in computer science?”
+
+Read more about `createAsyncThunk`: https://redux-toolkit.js.org/api/createAsyncThunk
 
 ---
 
@@ -239,32 +242,9 @@ import { store } from './redux/store'
 </Provider>
 ```
 
----
+The `Provider` component allows the `useSelector` and `useDispatch` hooks to function. It must be placed at the top of the component tree. 
 
-## 6️⃣ Build a Mini Product Store
-
-### Components to build:
-- `ProductList`: displays all products
-- `Cart`: displays items in cart with totals
-- `ProductRow`: displays a single product with Add to Cart button
-
-### Features:
-- Products fetched via `createAsyncThunk`
-- Cart managed via `createSlice`
-- Totals computed with `useSelector` + `reduce`
-- Loading and error states displayed
-
-💡 **AI Prompt:** “How do I calculate total cost in Redux with useSelector?”
-
----
-
-## 7️⃣ Stretch Topics (Optional)
-- Use `createEntityAdapter` for normalized product data
-- Add quantity support in cart reducer
-- Persist store to `localStorage`
-- Create reusable selectors for computed values
-
-📌 Explore: [createEntityAdapter](https://redux-toolkit.js.org/api/createEntityAdapter)
+💡 **AI Prompt:** “What a Provider component?”
 
 ---
 
