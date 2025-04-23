@@ -22,12 +22,14 @@ Your custom project must:
 
 - Be built with **React** as a single-page application
 - Use **form elements** with the **controlled component pattern**
-- Integrate with at least **one external API** using `fetch` or `createAsyncThunk`
-- Include at least **one of the following**:
-  - Use **Redux Toolkit** to manage application state (recommended)
-  - Use a **server** that serves or receives JSON data
 - Be structured with **modular components**
 - Include error handling and basic UI states (loading, empty, etc.)
+- Use **Redux** and **Redux Toolkit** to manage application state
+- Include at least one of the following: 
+  - Integrate with at least **one external API** using `fetch` or `createAsyncThunk`
+  - Use Tailwind
+  - Implement UI animation with Framer Motion
+  - Use React Query
 
 ---
 
