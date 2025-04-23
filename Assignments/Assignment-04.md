@@ -13,7 +13,7 @@ It's important to revisit the concepts from class to solidify your learning. Pra
 Your project does have to meet these criteria: 
 
 - Built with react as a single page application
-  - Form elememts should implememt Controlled Component Pattern
+  - Form elements should implememt Controlled Component Pattern
 - Integrates or makes network request to an external API
   - Fetch and Render data with React from external libraries
 - Includes one of the following:
