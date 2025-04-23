@@ -1,42 +1,72 @@
-# Class - FEW 2.3 - Assignment 4
+# 🧪 Final Project – Build a Custom React App
 
-## Description
+## 📝 Overview
+This is your opportunity to build a custom React project that demonstrates your creativity and technical skills using the tools and patterns you’ve learned in class.
 
-Your Custom project! This should be something that you want to build with React. Your project doesn't have to be complex or massive in scope. Instead make something you can finish in the time available (check the due date for final project.)
+You’ll apply key concepts from React and Redux Toolkit, such as controlled components, API integration, state management, and asynchronous data fetching. You'll also practice working responsibly with AI tools.
 
-### Why this assignment?
+---
 
-It's important to revisit the concepts from class to solidify your learning. Practice is important. Building something of your own invention is also important and satisfying. 
+## 🎯 Project Goals
+- Reinforce knowledge of single-page applications built with React
+- Demonstrate the ability to manage application state with Redux
+- Fetch and render data from an external API
+- Use form elements with the controlled component pattern
+- Build and structure your app for maintainability
+- Use AI tools thoughtfully and responsibly
 
-## Project requirements
+---
 
-Your project does have to meet these criteria: 
+## ✅ Project Requirements
+Your custom project must:
 
-- Built with react as a single page application
-  - Form elememts should implememt Controlled Component Pattern
-- Integrates or makes network request to an external API
-  - Fetch and Render data with React from external libraries
-- Includes one of the following:
-  - Uses Redux to manage application state
-  - Uses a server and consumes JSON from the server
+- Be built with **React** as a single-page application
+- Use **form elements** with the **controlled component pattern**
+- Integrate with at least **one external API** using `fetch` or `createAsyncThunk`
+- Include at least **one of the following**:
+  - Use **Redux Toolkit** to manage application state (recommended)
+  - Use a **server** that serves or receives JSON data
+- Be structured with **modular components**
+- Include error handling and basic UI states (loading, empty, etc.)
 
-### Deliverable
+---
 
-Post your work to GradeScope.
+## 🔐 Responsible Use of AI
+You are encouraged to use AI tools to:
+- Help you understand concepts and review your code
+- Provide guidance or debugging suggestions
 
-### Due date
+You should NOT:
+- Use AI to generate your entire app without understanding the code
+- Submit work you do not understand or cannot explain
 
-Class 13 - May 12
+📝 **Include a short section in your README** describing how you used AI. Example:
+> “I used AI to get help writing a reducer function and to debug my fetch request to OpenWeatherMap.”
 
-## Assessing the assignment
+---
 
-| -          | Does not meet expectations | Meets expectations       | Exceeds expectations |
-|:-----------|:---------------------------|:-------------------------|:---------------------|
-| Completed  | Did not complete    | Completed tutorial     | Solved some or all challenges |
-| Functional | Is not functional   | Base tutorial functional | Challenges are functioning |
-| Uses Redux or server | Does not use Redux or server | Makes use of redux, actions, and reducers | - |
-| Uses loads network data | Doesn't load network data | Loads network data | - |
-| Code quality | Indentation is bad spacing is inconsistent | Uses consistent indentation and spacing | Well written and well commented |
+## 📬 Submission Instructions
+1. Push your finished project to GitHub
+2. Submit the link to your repository on GradeScope
+3. Be sure your README includes:
+   - Project description
+   - Instructions for running your app
+   - Summary of how you used AI responsibly
 
+🗓️ **Due Date:** Class 13 – May 12
 
+---
 
+## 📊 Assessment Rubric
+| Category               | Does Not Meet        | Meets Expectations       | Exceeds Expectations              |
+|------------------------|----------------------|---------------------------|-----------------------------------|
+| **Completion**         | Did not complete     | Completed all core features | Built additional stretch features |
+| **Functionality**      | App not working      | App loads and functions   | App includes polish and extras   |
+| **State Management**   | No state or incorrect | Uses Redux or server properly | Uses advanced features like thunk or memo |
+| **API Integration**    | No data loaded       | Loads and displays data   | Includes loading/error handling  |
+| **Code Quality**       | Inconsistent formatting | Well-formatted and readable | Well-organized and commented     |
+| **AI Usage**           | No explanation or misused | Used responsibly and documented | Reflected critically and creatively |
+
+---
+
+🎉 This is your chance to bring your own ideas to life. Make something fun, useful, or just something you're proud to show off. Good luck!

@@ -167,6 +167,8 @@ export default cartSlice.reducer
 ## 4️⃣ Handle Async with `createAsyncThunk`
 Asynchronous actions in Redux are handled in a special way, using a "thunk". 
 
+
+
 Use `createAsyncThunk` to fetch data from an API (e.g. product list).
 
 ```js
