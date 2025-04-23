@@ -38,7 +38,7 @@ You are encouraged to use AI tools to:
 - Help you understand concepts and review your code
 - Provide guidance or debugging suggestions
 
-You should NOT:
+**You should NOT:**
 - Use AI to generate your entire app without understanding the code
 - Submit work you do not understand or cannot explain
 
