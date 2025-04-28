@@ -57,32 +57,40 @@ npm install
 
 ### 2️⃣ Install Tailwind and dependencies
 
+Follow the guide here: https://tailwindcss.com/docs/installation/using-vite
+
+
+
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install tailwindcss @tailwindcss/vite
 ```
 
 ### 3️⃣ Configure tailwind.config.js
 
 ```js
 // tailwind.config.js
-module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  theme: {
-    extend: {}
-  },
-  plugins: []
-}
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [
+		react(), 
+		tailwindcss()
+	],
+})
+
 ```
 
 ### 4️⃣ Add Tailwind to your CSS
 
 ```css
 /* src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 ```
+
+You can remove everything else here. 
 
 Then import it in `main.jsx`:
 
@@ -97,48 +105,6 @@ npm run dev
 ```
 
 🎉 You’re ready to use Tailwind in your Vite + React app!
-
-### 1️⃣ Create a React App
-
-```bash
-npx create-react-app my-app
-cd my-app
-```
-
-### 2️⃣ Install Tailwind and dependencies
-
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-### 3️⃣ Configure tailwind.config.js
-
-```js
-// tailwind.config.js
-module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
-  theme: {
-    extend: {}
-  },
-  plugins: []
-}
-```
-
-### 4️⃣ Add Tailwind to your CSS
-
-```css
-/* src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-Then import it in `index.js`:
-
-```js
-import './index.css'
-```
 
 ---
 
@@ -155,6 +121,12 @@ import './index.css'
 
 📚 Full docs: [tailwindcss.com/docs](https://tailwindcss.com/docs)
 
+Compare npm packages here: 
+
+https://npm-compare.com/classnames,clsx,tailwind-merge
+
+The link above compares: clsx, classnames, and tailwind-merge.
+
 ---
 
 ## 🧠 Gotchas and Tips
@@ -165,10 +137,6 @@ import './index.css'
 - **Class conflicts**: Use utilities like `clsx` to manage conditional styles
 
 ---
-
----
-
-$1
 
 ### 4️⃣ UnoCSS
 - A utility-first, atomic CSS engine that generates styles on demand
@@ -191,4 +159,95 @@ UnoCSS offers flexible syntax like shortcuts, safelists, and presets — making 
 
 ---
 
-🎉 That’s it! You’re now ready to build clean, fast, and beautiful UIs with Tailwind + React.
+## 🧰 Using `clsx` and `classnames` with Tailwind
+
+As your components grow, you’ll often want to apply Tailwind classes **conditionally** based on props or state.  
+Manually building class strings can get messy fast.
+
+Instead, use utilities like [`clsx`](https://www.npmjs.com/package/clsx) or [`classnames`](https://www.npmjs.com/package/classnames) to help!
+
+---
+
+### 🛠 Install `clsx`
+```bash
+npm install clsx
+```
+
+Or install `classnames` if you prefer:
+```bash
+npm install classnames
+```
+
+---
+
+### ✅ Example: Conditional Button Styles with `clsx`
+
+```jsx
+import clsx from 'clsx'
+
+function Button({ isActive }) {
+  return (
+    <button
+      className={clsx(
+        'px-4 py-2 rounded text-white',
+        {
+          'bg-blue-600 hover:bg-blue-700': isActive,
+          'bg-gray-400 hover:bg-gray-500': !isActive,
+        }
+      )}
+    >
+      {isActive ? 'Active' : 'Inactive'}
+    </button>
+  );
+}
+```
+
+- If `isActive` is true, the button is blue.
+- If `isActive` is false, the button is gray.
+
+---
+
+### ✅ Example: Dynamic Card Component with `classnames`
+
+```jsx
+import classNames from 'classnames'
+
+function Card({ featured }) {
+  const cardClass = classNames(
+    'p-6 rounded shadow-md',
+    { 'bg-yellow-100 border-yellow-400': featured },
+    { 'bg-white border-gray-300': !featured }
+  )
+
+  return (
+    <div className={cardClass}>
+      <h2 className="text-xl font-bold">Card Title</h2>
+    </div>
+  )
+}
+```
+
+---
+
+### 🤔 When to Use
+| Scenario | Solution |
+|:---|:---|
+| You have **conditional classes** | ✅ Use `clsx` or `classnames` |
+| You want **dynamic props** or **logic-heavy styling** | ✅ Use these tools |
+| Simple static classes | ❌ No need — regular `className=\"...\"` is fine |
+
+---
+
+📚 Official docs:  
+- [clsx on npm](https://www.npmjs.com/package/clsx)  
+- [classnames on npm](https://www.npmjs.com/package/classnames)
+
+---
+
+# 📋 Summary
+
+| What You Had | What We Add |
+|:------------|:------------|
+| Mention of `clsx` in a tip | ✅ Full explanation |
+| No examples | ✅ Code examples (Button, Card) |
+| No guidance when to use | ✅ Simple decision chart |
