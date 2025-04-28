@@ -12,7 +12,9 @@ This lesson introduces Framer Motion with practical examples for use in any Reac
 
 Before we dive into Framer Motion code, let's see what good animation looks like! Explore these real-world examples where motion enhances the user experience:
 
-- 🎨 [Framer Motion Examples Gallery](https://www.framer.com/motion/examples/)
+
+
+- 🎨 [Framer Motion Examples Gallery](https://examples.motion.dev)
 - 🛍️ [Linear (linear.app)](https://linear.app/)
 - 🛠️ [Vercel Homepage](https://vercel.com)
 - 📦 [Framer.com](https://www.framer.com/)
