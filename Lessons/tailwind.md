@@ -65,10 +65,10 @@ Follow the guide here: https://tailwindcss.com/docs/installation/using-vite
 npm install tailwindcss @tailwindcss/vite
 ```
 
-### 3️⃣ Configure tailwind.config.js
+### 3️⃣ Configure vite.config.js
 
 ```js
-// tailwind.config.js
+// vite.config.js
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
