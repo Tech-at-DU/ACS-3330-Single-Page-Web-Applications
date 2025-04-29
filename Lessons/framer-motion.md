@@ -61,7 +61,7 @@ function Card() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      transition={{ duration: 2 }}
       className="p-4 bg-white rounded shadow-md"
     >
       Hello with animation!
@@ -69,6 +69,8 @@ function Card() {
   )
 }
 ```
+
+Framer Motion redefines all of the standard components like `div`, `p`, `h1`, etc. as `motion.div`, `motion.p`, `motion.h1` etc. These can be animated with props like: `initial`, `animate`, `exit` and more. 
 
 ### ✅ Check Your Understanding
 - What happens if you leave out `initial`?
@@ -170,9 +172,16 @@ const itemVariants = {
 
 function AnimatedList({ items }) {
   return (
-    <motion.ul initial="hidden" animate="visible" variants={listVariants}>
+    <motion.ul 
+      initial="hidden" 
+      animate="visible" 
+      variants={listVariants}
+    >
       {items.map((item) => (
-        <motion.li key={item} variants={itemVariants}>
+        <motion.li 
+          key={item} 
+          variants={itemVariants}
+        >
           {item}
         </motion.li>
       ))}
