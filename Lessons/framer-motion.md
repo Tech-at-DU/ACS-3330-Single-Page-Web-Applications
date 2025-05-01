@@ -78,6 +78,42 @@ Framer Motion redefines all of the standard components like `div`, `p`, `h1`, et
 
 💬 **AI Prompt:** "How can I animate both opacity and scale at the same time?"
 
+### How to apply this? 
+You can use the idea above to animate all of the elements on a "page" or in a component. 
+
+- import motion with: `import { motion } from 'framer-motion'`
+- Add `motion.` to the front each tag that will animate. For example: `<div>` becomes `<motion.div>`. 
+- Set `initial` to set the starting properties of each element.
+- Set `animate` to animate elements to their ending properties. 
+- You can animate any CSS property. Use the JS (camel case) version of the property name. You can also use `x` and `y` which are not standard CSS property names. For example: 
+
+```JS
+<motion.h1
+  initial={{ y: 10, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  className='text-5xl font-semibold text-slate-700 mb-3 ml-5'
+>{Math.round(main.temp)}&deg;
+</motion.h1>
+```
+
+Do this for each element. Adjust the propties to get the effect you are looking for. 
+
+The `transition` attribute allows you to control the duration, delay, and more. Try this: 
+
+```JS
+<motion.p
+  initial={{ y: 10, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ delay: 0.3 }}
+  className='text-lg text-gray-600 capitalize mb-1'>
+  {weather[0].description}
+</motion.p>
+```
+
+This element will delay 0.3 secs before its animation begins. Use this to "sequence" or "choreograph" your motion! 
+
+There are more properties than these Framer Motion is a robust tool with many options!
+
 ---
 
 ## 🔁 AnimatePresence: Animate on Remove
