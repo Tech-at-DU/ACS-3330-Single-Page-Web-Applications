@@ -116,7 +116,8 @@ There are more properties than these Framer Motion is a robust tool with many op
 
 ---
 
-## 🔁 AnimatePresence: Animate on Remove
+## 🔁 AnimatePresence
+`AnimatePresence` handles elements that are added and removed from the DOM. Make it the parent of elements that will be dynamically rendered. 
 
 ```jsx
 import { AnimatePresence, motion } from 'framer-motion'
