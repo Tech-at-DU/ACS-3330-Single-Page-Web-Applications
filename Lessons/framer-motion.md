@@ -32,7 +32,7 @@ As you browse, look for:
 
 ---
 
-## ✅ Why Use Framer Motion in 2025?
+## ✅ Why Use Framer Motion?
 
 - Still widely used and actively maintained
 - Easy to implement animations with `initial`, `animate`, and `exit`
@@ -113,6 +113,16 @@ The `transition` attribute allows you to control the duration, delay, and more. 
 This element will delay 0.3 secs before its animation begins. Use this to "sequence" or "choreograph" your motion! 
 
 There are more properties than these Framer Motion is a robust tool with many options!
+
+Check out the docs: https://motion.dev/docs/react-animation
+
+Be sure to read the first 5 sections under Animation: 
+- [Overview](https://motion.dev/docs/react-animation)
+- [Gestures](https://motion.dev/docs/react-gestures)
+- [Layout](https://motion.dev/docs/react-layout-animations)
+- [Scroll](https://motion.dev/docs/react-scroll-animations)
+- [Transitions](https://motion.dev/docs/react-transitions)
+
 
 ---
 
