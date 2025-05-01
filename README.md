@@ -63,8 +63,10 @@ By the end of the course, you will be able to:
 | 11    | Tue, Apr 29 | [Tailwind CSS] | - |
 | 12    | Thr, May  1 | [Framer Motion] | - |
 |  -    | **Week 7**  | - | - | - |
-| 13    | Tue, May  6 | [RTK Query] - Final Presentation| - | 
+| 13    | Tue, May  6 | [RTK Query] | - | 
 | 14    | Thr, May  8 |  | Final Assessment | - |
+|  -    | **Week 8**  | - | - | - |
+| 15    | Tue, May  6 | - Final Presentation| - | 
 
 [React and functional Programming]: Lessons/lesson-01.md
 [React, Props, and State]: Lessons/lesson-02.md
