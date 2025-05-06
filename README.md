@@ -66,7 +66,7 @@ By the end of the course, you will be able to:
 | 13    | Tue, May  6 | [RTK Query] | - | 
 | 14    | Thr, May  8 |  | Final Assessment | - |
 |  -    | **Week 8**  | - | - | - |
-| 15    | Tue, May  6 | - Final Presentation| - | 
+| 15    | Tue, May 13 | - Final Presentation| - | 
 
 [React and functional Programming]: Lessons/lesson-01.md
 [React, Props, and State]: Lessons/lesson-02.md
