@@ -63,7 +63,7 @@ By the end of the course, you will be able to:
 | 11    | Tue, Apr 29 | [Tailwind CSS] | - |
 | 12    | Thr, May  1 | [Framer Motion] | - |
 |  -    | **Week 7**  | - | - | - |
-| 13    | Tue, May  6 | [RTK Query] | - | 
+| 13    | Tue, May  6 | [RTK Query] [More Motion] | - | 
 | 14    | Thr, May  8 |  | Final Assessment | - |
 |  -    | **Week 8**  | - | - | - |
 | 15    | Tue, May 13 | - Final Presentation| - | 
@@ -85,6 +85,8 @@ By the end of the course, you will be able to:
 [Tailwind CSS]: Lessons/tailwind.md
 [Framer Motion]: Lessons/framer-motion.md
 [RTK Query]: https://github.com/Tech-at-DU/redux-toolkit-async
+
+[More Motion]: https://github.com/Tech-at-DU/vite-pages-animated
 
 [Closures]: Lessons/closures.md
 
