@@ -61,12 +61,11 @@ Let's create a simple **counter** that displays:
 - Two buttons (`+` and `-`)
 
 ### **1.1 Set Up a React Project**
-Run the code below or use another React project like [Vite](https://vite.dev/guide/#scaffolding-your-first-vite-project):
 
 ```sh
-npx create-react-app props-and-state
+npm create vite@latest
 cd props-and-state
-npm start
+npm run dev
 ```
 
 ### **1.2 Create a Counter Component**
