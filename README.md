@@ -38,35 +38,33 @@ By the end of the course, you will be able to:
 
 ## Schedule
 
-**Course Dates:** March 25, 2025 to May 6, 2025
+**Course Dates:** Jan 20, 2026 to Mar 6, 2026
 
 **Class Times:** Tuesday, Thursday 1:00 PM to 3:45 PM Virtual online.
 
 | Class | Date | Topics | Assignment |
 |:------|:-----|:-------|:-----------|
 |  -    | **Week 1**  | - | - | - |
-|  1    | Tue, Mar 25 | [React and functional Programming] | [Assignment 1 - React Product List] - React Tutorial |
-|  2    | Thr, Mar 27 | [React, Props, and State] |
+|  1    | Tue, Jan 20 | [React and functional Programming] | [Assignment 1 - React Product List] - React Tutorial |
+|  2    | Thr, Jan 22 | [React, Props, and State] |
 |  -    | **Week 2**  | - | - | - |
-|  3    | Tue, Apr  1 | [React State Management] | - |
-|  4    | Thr, Apr  3 | [Conditional Rendering] | [Assignment 2 - Weather API] |
+|  3    | Tue, Jan 27 | [React State Management] | - |
+|  4    | Thr, Jan 29 | [Conditional Rendering] | [Assignment 2 - Weather API] |
 |  -    | **Week 3**  | - | - | - |
-|  5    | Tue, Apr  8 | [useEffect Hook] | - |
-|  6    | Thr, Apr 10 | [Closures] | - |
+|  5    | Tue, Feb  3 | [useEffect Hook] | - |
+|  6    | Thr, Feb  5 | [Closures] | - |
 |  -    | **Week 4**  | - | - | - |
-|  7    | Tue, Apr 15 | Interview Challenge | [Assignment 3 - React + Redux Tutorial] |
-|  8    | Thr, Apr 17 | [Application State] | - |
+|  7    | Tue, Feb 10 | Interview Challenge | [Assignment 3 - React + Redux Tutorial] |
+|  8    | Thr, Feb 12 | [Application State] | - |
 |  -    | **Week 5**  | - | - | - |
-|  9    | Tue, Apr 22 | [Redux] | - |
-| 10    | Thr, Apr 24 | [React and Express] | [Assignment 4 - Custom Project] |
+|  9    | Tue, Feb 17 | [Redux] | - |
+| 10    | Thr, Feb 19 | [React and Express] | [Assignment 4 - Custom Project] |
 |  -    | **Week 6**  | - | - | - |
-| 11    | Tue, Apr 29 | [Tailwind CSS] | - |
-| 12    | Thr, May  1 | [Framer Motion] | - |
+| 11    | Tue, Feb 24 | [Tailwind CSS] | - |
+| 12    | Thr, Feb 26 | [Framer Motion] | - |
 |  -    | **Week 7**  | - | - | - |
-| 13    | Tue, May  6 | [RTK Query] - [More Motion] | - | 
-| 14    | Thr, May  8 |  | Final Assessment | - |
-|  -    | **Week 8**  | - | - | - |
-| 15    | Tue, May 13 | - Final Presentation| - | 
+| 13    | Tue, Mar  3 | [RTK Query] - [More Motion] | - | 
+| 14    | Thr, Mar  5 |  | Final Assessment | - |
 
 [React and functional Programming]: Lessons/lesson-01.md
 [React, Props, and State]: Lessons/lesson-02.md
