@@ -1,4 +1,4 @@
-# **ACS 3330 - Lesson 11: `useEffect` in a Live Weather Dashboard**  
+# **ACS 3330 - Lesson 11: `useEffect`**  
 
 ## **Overview**  
 Students will build a **Live Weather Dashboard** that:  
