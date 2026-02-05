@@ -4,8 +4,6 @@
 
 ---
 
-This is a great start! You're clearly encouraging students to *actively engage* with AI, not passively rely on it—which is key to real learning. Here’s some specific feedback and suggestions to improve clarity, structure, and pedagogical impact:
-
 ## ⚡ AI-Powered Learning Challenge
 
 AI can help clarify concepts, review code, and push your thinking—but only if you engage with it critically. Here are two exercises to practice:
@@ -62,6 +60,8 @@ By the end of this lesson, you will be able to:
 - ✅ **Define closures** and explain how they work.
 - ✅ **Use closures in everyday programming** for state management.
 - ✅ **Fix stale closures in React applications**.
+
+Read what JavaScript.info has to say about variable scope and closures: https://javascript.info/closure
 
 ---
 
