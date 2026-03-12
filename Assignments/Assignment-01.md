@@ -19,9 +19,9 @@ This assignment introduces **React components**, **functional programming with `
 1. **Ensure you have Node.js installed.** If not, download it from [nodejs.org](https://nodejs.org/).
 2. **Create your React app:**
    ```sh
-   npx create-react-app react-product-list
+   npm create vite@latest
    cd react-product-list
-   npm start
+   npm run dev
    ```
 3. **Copy the [`data.json`](./data.json) file into your `src` directory.**
 4. **Create a new module named `data.js`** in `src`. This will be used to process and export your product data.

@@ -1,22 +1,5 @@
 # ACS 3330 - Lesson 2: React Props and State
 
-## create-react-app is depracated what do we do? 
-
-It looks like `npx create-react-app` (CRA) is depracated. What are our alternatives? 
-
-Try these prompts with your favorite AI:
-
-> "create-react-app is deprecated, what alternatives are available?"
-
-> "Do these all work with Redux?"
-
-> "What about routers. Do these work with React Router?"
-
-Discuss the responses...
-- What alternatives are available?
-- What are the pros and cons of each?
-- Which will you use? 
-
 ## Overview
 
 This lesson explores **props and state in React**, essential concepts for managing data flow in your applications. You will learn how to pass data between components, manage local state, and lift state to the parent for better control.
@@ -78,12 +61,11 @@ Let's create a simple **counter** that displays:
 - Two buttons (`+` and `-`)
 
 ### **1.1 Set Up a React Project**
-Run the code below or use another React project like [Vite](https://vite.dev/guide/#scaffolding-your-first-vite-project):
 
 ```sh
-npx create-react-app props-and-state
+npm create vite@latest
 cd props-and-state
-npm start
+npm run dev
 ```
 
 ### **1.2 Create a Counter Component**
