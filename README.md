@@ -1,9 +1,5 @@
 # ACS 3330 - Single Page Applications
 
-<!-- | Course Section | Instructor | Slack Channel | Course Website | Instructor 1-on-1 | Tracker |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| A | **@mitchell** | `#few-2-3` | [make.sc/few2.3](https://make.sc/few2.3) | [Virtual Office](https://make.sc/mitchell-zoom) | [GradeScope](https://www.gradescope.com) | -->
-
 ## Course Description
 
 This course covers the process and tools used to build single page applications (SPA) using the most up-to-date tools and techniques. Students will learn to manage state and render on state changes using reactive programming techniques. Modern JavaScript libraries including React will be used.
