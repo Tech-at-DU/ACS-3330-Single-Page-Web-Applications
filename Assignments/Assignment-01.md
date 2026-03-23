@@ -62,7 +62,7 @@ Transform the product data into an array of category names. You should have an a
    "Baby", 
    "Movies",
    ... 
- ]
+]
  ```
 
 🔹 **Check your work with an AI Review Prompt:** *"Does my **`map`** function efficiently extract categories? Are there any better approaches?"*
