@@ -28,6 +28,44 @@ Read this introduction to SPAs: [What is a Single Page Application?](https://www
 
 JavaScript continues to evolve. Take a quick tour of State of JS to see the latest trends and innovations.
 
+## React Project Starters & Libraries
+
+Create React App is no longer maintained. Modern React projects use faster and more flexible tools.
+
+### Common React Starters
+
+- **Vite (Recommended)**
+  - Fast dev server and simple setup
+  - Minimal configuration
+  - Good default for most projects
+
+- **Next.js**
+  - Full framework (routing, server rendering, API routes)
+  - Used for production apps and larger systems
+  - Adds complexity you may not need yet
+
+- **Expo (React Native)**
+  - Used for mobile apps
+  - Not relevant for web SPAs in this course
+
+### Why This Matters
+
+Different starters shape how your app is structured:
+
+- Routing may be built-in (Next.js) or manual (Vite + React Router)
+- File structure and conventions vary
+- Build tools and performance differ
+
+For this class, we use **Vite** so you understand the pieces instead of hiding them behind a framework.
+
+https://vite.dev
+
+### 🔹 Quick Check
+
+- What files does Vite generate that start your app?
+- Where is React actually rendered to the DOM?
+- What would you need to add to support routing?
+
 ## Why Learn React?
 
 React is one of the most widely used frontend libraries, known for its efficiency and developer-friendly workflow. Many top companies rely on React, including:
@@ -55,14 +93,17 @@ React is built on three main concepts:
 **React applications are made up of components.** Each component manages its own state and re-renders when data changes.
 
 #### 🔹 Active Learning Task:
-1. **Set up a React project:**
-  - If you don’t have Node.js installed, download it from nodejs.org.- - Open a terminal and run:
+1. **Set up a React project (Vite):**
+  - Open a terminal and run:
     ```sh
-    npx create-react-app my-app
+    npm create vite@latest my-app
     cd my-app
-    npm start
+    npm install
+    npm run dev
     ```
-  - This will create and start a React project.
+  - Choose the **React** template when prompted.
+  - Open the project in your code editor and explore the file structure.
+  - Locate `main.jsx` and `App.jsx` and identify where your app starts.
 2. **Explore "A Simple Component":**
   - Visit React's documentation and find the "A Simple Component" section.
   - Copy the example code below into your App.js file:
@@ -72,6 +113,7 @@ React is built on three main concepts:
     }
     ```
   - Modify it to display your name and test it in your browser.
+  - Inspect `main.jsx` and explain how React mounts your component to the DOM. Where does this happen?
   - Pair up with a classmate to discuss how it works.
 
 ### 2. JSX
@@ -179,4 +221,3 @@ Additional Resources
 - [React Tutorial](https://react.dev/learn/tutorial-tic-tac-toe)
 - [Understanding JSX](https://react.dev/learn/writing-markup-with-jsx)
 - [JavaScript Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
-

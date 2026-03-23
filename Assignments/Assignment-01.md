@@ -217,6 +217,3 @@ Post your project to Github and submit your  work to GradeScope.
 ## Final Thoughts
 
 By completing this assignment, you will gain hands-on experience with **React, state management, functional programming, and modular code organization**. Utilize AI prompts to refine your work and enhance your problem-solving skills. 🚀
-
-
-

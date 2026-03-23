@@ -41,7 +41,7 @@ By the end of the course, you will be able to:
 | Class | Date | Topics | Assignment |
 |:------|:-----|:-------|:-----------|
 |  -    | **Week 1**  | - | - | - |
-|  1    | Mon, Mar 23 | [React and functional Programming] | [Assignment 1 - React Product List] - React Tutorial |
+|  1    | Mon, Mar 23 | [React and functional Programming] | [Assignment 1 - React Product List] |
 |  2    | Wed, Mar 25 | [React, Props, and State] |
 |  -    | **Week 2**  | - | - | - |
 |  3    | Mon, Mar 30 | [React State Management] | - |
