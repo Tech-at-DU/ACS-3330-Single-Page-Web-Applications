@@ -378,6 +378,140 @@ Examples:
 <button onClick={() => dispatch({ type: 'remove', id: item.id })}>Remove</button>
 ```
 
+## Stretch Challenges
+
+If your group finishes the required cart display, add one or more of these:
+
+### Stretch 1 — Item Total
+
+Display the total cost for each cart row.
+
+Example:
+
+```text
+Fintone cost each $190.79 qty: 5 total cost: $953.95
+
+Hint:
+
+const rowTotal = item.price * item.qty
+```
+
+⸻
+
+### Stretch 2 — Increment and Decrement Buttons
+
+Add controls to each cart item so the user can change quantity directly from the cart.
+
+Example:
+
+```
+Fintone cost each $190.79 qty: 5 total cost: $953.95 [+1] [-1]
+```
+
+Suggested buttons:
+
+```jsx
+<button onClick={() => dispatch({ type: 'increment', id: item.id })}>+1</button>
+<button onClick={() => dispatch({ type: 'decrement', id: item.id })}>-1</button>
+```
+
+Question:
+- What should happen when quantity reaches 0?
+
+⸻
+
+### Stretch 3 — Remove Button
+
+Add a button that removes the item from the cart completely.
+
+```jsx
+<button onClick={() => dispatch({ type: 'remove', id: item.id })}>Remove</button>
+```
+
+Replace the `## Your Task` section in **Part 6** with:
+
+## Your Task
+
+Add:
+
+- total item count
+- total cart cost
+
+If you finish early, also add:
+
+- row totals for each product
+
+Example:
+
+```text
+Zoolab $12.07 qty: 2 total: $24.14
+Opela $29.83 qty: 3 total: $89.49
+
+Total items: 5
+Total cost: $113.63
+
+Replace the final `## Optional Stretch Challenges` section with:
+```
+
+## Optional Stretch Challenges
+
+If you finish early, try one of these:
+
+### Stretch 1 — Row Totals
+
+Display the total cost for each cart item.
+
+Example:
+
+```text
+Fintone cost each $190.79 qty: 5 total cost: $953.95
+```
+
+⸻
+
+### Stretch 2 — Increment and Decrement Controls
+
+Add +1 and -1 buttons for each cart item.
+
+Example:
+
+Fintone cost each $190.79 qty: 5 total cost: $953.95 [+1] [-1]
+
+Suggested actions:
+
+```JS
+dispatch({ type: 'increment', id: item.id })
+dispatch({ type: 'decrement', id: item.id })
+```
+
+When quantity reaches 0, decide whether the item should remain in the cart or be removed.
+
+⸻
+
+Stretch 3 — Clear Cart
+
+Add a button:
+
+```JS
+dispatch({ type: 'clear' })
+```
+
+⸻
+
+### Stretch 4 — Inventory Updates
+
+When a product is added to the cart, reduce the number of available units in inventory.
+
+This is harder because now you have two related pieces of state:
+  - inventory
+  - shopping cart
+
+Do not attempt this until your cart works.
+
+Then in `## Definition of Done`, add this bullet after `- renders cart items clearly`:
+
+- optionally displays row totals or quantity controls if your group finishes early
+
 ---
 
 # Part 6 — Derived State: Totals and Counts (20 min)
