@@ -1,125 +1,609 @@
-# 🧩 ACS 3330 - Lab 2: Product Dashboard with Shopping Cart
+# Lesson 3 — Shopping Cart State with `useReducer` (2:45 Session)
 
-## 📝 Description
-In this lab-style assignment, you'll build a dynamic product dashboard that expands on the concepts from Assignment 1. You'll implement advanced React patterns like `useMemo`, controlled components, conditional rendering, and derived state metrics — and you'll add a **shopping cart** to manage product selection.
+## Overview
 
----
+In the last lesson you built a product list page in React.
 
-## 🎯 Learning Goals
-- Use `useMemo()` to optimize performance
-- Conditionally render loading, empty, or summary states
-- Add interactivity with a shopping cart and quantity tracking
-- Decompose UI into smaller components
+In this lesson, the main problem is no longer rendering products. The real problem is deciding how to **represent and manage shopping cart state**.
 
----
+You will work in pairs to design a cart, build it, and discuss the trade-offs in different solutions.
 
-## 🧠 `useMemo`
-The `useMemo` hook is used to optimize performance by storing the result of an "expensive" calculation between renders.
+This lesson also revisits hooks. A shopping cart is a good example of when `useReducer()` can be a better fit than `useState()` because the cart has a clear set of actions:
 
-📖 Read more: [React useMemo docs](https://react.dev/reference/react/useMemo)
-
-To calculate the total number of units and the total cost of inventory, you might do something like this:
-
-```js
-const totalUnitsInInventory = data.reduce((acc, p) => acc + p.units, 0);
-
-const totalCostOfInventory = data.reduce((acc, p) => acc + (p.units * p.price), 0);
-```
-
-If this code is inside a component, it's recalculated on every render — even if `data` hasn't changed.
-
-With `useMemo`, you can cache the result and specify `data` as a dependency to recalculate only when needed.
-
-### ✅ Challenge
-Use `useMemo` to calculate and cache the total units and total value of inventory. Use `data` as the dependency.
-
-💡 **AI Prompt:**
-> "How do I use useMemo to cache a calculated value in React?"
-
-> "Explain useMemo as a beginner, intermediate, and expert."
-
-> "Give me a list of example use cases for useMemo"
+- add an item
+- remove an item
+- increment quantity
+- decrement quantity
+- clear the cart
 
 ---
 
-## 🛒 Shopping Cart
-Your goal is to create a shopping cart and integrate it with the product list from Assignment 1.
+## Learning Goals
 
-### 1️⃣ Add State
-Add a state variable to hold the cart. This will be an array of items.
+By the end of this lesson you should be able to:
+
+- explain why state shape matters in a React application
+- use `useReducer()` to manage shopping cart state
+- describe cart updates as actions
+- update arrays and objects in state without mutation
+- distinguish stored state from derived values
+- calculate totals from cart data using `reduce()`
+
+---
+
+## Essential Question
+
+**How should we represent and manage cart state in a React app?**
+
+Keep this question in mind throughout the class.
+
+---
+
+## Before You Start
+
+You should already have:
+
+- a product list page from the previous assignment
+- products rendering from an array
+- a product card or product row component
+- basic familiarity with hooks
+- previous experience using a reducer from the ShopKeeper assignment
+
+---
+
+## Today’s Build Plan
+
+By the end of class, your app should be able to:
+
+1. render a product list
+2. add products to a cart
+3. store cart data with `useReducer()`
+4. display cart items with quantities
+5. calculate derived values like total items and total cost
+6. explain why your cart state is shaped the way it is
+
+---
+
+# Part 1 — Opening Question and Design Setup (15 min)
+
+## Short Discussion
+
+Today’s lesson is about **state design**.
+
+Before you write code, answer these questions with a partner:
+
+1. Where should `shoppingCart` state live?
+2. What should one cart item look like?
+3. What should happen when the same product is added twice?
+
+Write down your answers before you begin coding.
+
+---
+
+## Two Possible Cart Shapes
+
+### Option A — Repeated Products
 
 ```js
-const [shoppingCart, setShoppingCart] = useState([]);
+[
+  { id: 1, name: 'Zoolab', price: 12.07 },
+  { id: 1, name: 'Zoolab', price: 12.07 },
+  { id: 2, name: 'Opela', price: 29.83 }
+]
 ```
 
-### 2️⃣ Add to Cart
-Render each product as a card that shows name, price, and an **Add to Cart** button.
+### Option B — Grouped Cart Items with Quantity
 
-When clicked, add the item to the cart. 
-
-🧩 **Note:** Updating arrays/objects in React requires creating a new copy of that object:
 ```js
-setShoppingCart([...shoppingCart, newItem]);
+[
+  { id: 1, name: 'Zoolab', price: 12.07, qty: 2 },
+  { id: 2, name: 'Opela', price: 29.83, qty: 1 }
+]
 ```
 
-💡 **AI Prompt:**
-> "Why doesn't React re-render when I mutate an array in state?"
+## Quick Write (Pairs)
 
-> "Why does [...shoppingCart] copy the shoppingCart array?"
+Discuss:
 
-### 3️⃣ Create a Shopping Cart Component
-Create a `Cart` component. Pass it the items from state and display them as:
+- Which shape seems easier to render?
+- Which shape seems easier to update?
+- Which shape will you use today, and why?
 
-#### 🦊 Level 1 – Basic List
+For this lesson, **Option B is recommended** because it makes quantity and totals easier to manage.
+
+---
+
+# Part 2 — Why `useReducer()` Fits This Problem (15 min)
+
+## Review
+
+A shopping cart is not just a single value.
+
+It has **rules** and **actions**.
+
+Examples:
+
+- add a product
+- remove a product
+- increase quantity
+- decrease quantity
+- clear the cart
+
+When state changes follow named actions, `useReducer()` is often clearer than several `useState()` updates scattered across components.
+
+---
+
+## The Idea
+
+With `useReducer()`, instead of writing:
+
+```js
+setShoppingCart(...)
 ```
-Zoolab $12.07 qty: 1
-Lotstring $185.21 qty: 1
-Fintone $190.79 qty: 1
-Zoolab $12.07 qty: 1
-Opela $29.83 qty: 1
-Opela $29.83 qty: 1
-Opela $29.83 qty: 1
+
+You describe what happened:
+
+```js
+dispatch({ type: 'add', product })
 ```
 
-#### 🍄 Level 2 – Grouped by Item
+That means:
+
+- the UI dispatches actions
+- the reducer decides how state changes
+- the update logic stays in one place
+
+---
+
+## Reducer Shape
+
+A reducer receives:
+
+- the current state
+- an action object
+
+and returns:
+
+- the next state
+
+```js
+function cartReducer(cart, action) {
+  switch (action.type) {
+    case 'add':
+      // return updated cart
+    default:
+      return cart
+  }
+}
 ```
+
+---
+
+# Part 3 — Core Challenge: Build the Cart Reducer (30 min)
+
+## Your Task
+
+Use `useReducer()` to manage `shoppingCart`.
+
+Start with this setup:
+
+```js
+import { useReducer } from 'react'
+```
+
+```js
+const [shoppingCart, dispatch] = useReducer(cartReducer, [])
+```
+
+---
+
+## Recommended Cart Item Shape
+
+```js
+{
+  id: 1,
+  name: 'Zoolab',
+  price: 12.07,
+  qty: 2
+}
+```
+
+---
+
+## Start with These Actions
+
+At minimum, your reducer should support:
+
+- `add`
+- `remove`
+
+If your group finishes early, add:
+
+- `increment`
+- `decrement`
+- `clear`
+
+---
+
+## Example Reducer
+
+Use this example to understand the pattern. Do not just copy it without reading it.
+
+```js
+function cartReducer(cart, action) {
+  switch (action.type) {
+    case 'add': {
+      const product = action.product
+      const existingItem = cart.find(item => item.id === product.id)
+
+      if (existingItem) {
+        return cart.map(item =>
+          item.id === product.id
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        )
+      }
+
+      return [...cart, { ...product, qty: 1 }]
+    }
+
+    case 'remove':
+      return cart.filter(item => item.id !== action.id)
+
+    case 'increment':
+      return cart.map(item =>
+        item.id === action.id
+          ? { ...item, qty: item.qty + 1 }
+          : item
+      )
+
+    case 'decrement':
+      return cart
+        .map(item =>
+          item.id === action.id
+            ? { ...item, qty: item.qty - 1 }
+            : item
+        )
+        .filter(item => item.qty > 0)
+
+    case 'clear':
+      return []
+
+    default:
+      return cart
+  }
+}
+```
+
+---
+
+## Checkpoint 1
+
+By the end of this section, you should have:
+
+- a `cartReducer()` function
+- `useReducer()` set up in your component
+- an `Add to Cart` button that dispatches an action
+
+---
+
+# Part 4 — Connect the Product List to the Cart (25 min)
+
+## Add to Cart Button
+
+Each product should render:
+
+- name
+- price
+- button
+
+Example:
+
+```js
+<button onClick={() => dispatch({ type: 'add', product })}>
+  Add to Cart
+</button>
+```
+
+---
+
+## Build Block
+
+Work in pairs.
+
+Make your product list dispatch `add` actions to the reducer.
+
+Your goal is simple:
+
+- click a button
+- update the cart
+- render the result
+
+Do not worry about styling yet.
+
+---
+
+## Checkpoint 2
+
+You should now be able to:
+
+- click **Add to Cart**
+- see an item appear in the cart
+- add the same item more than once
+- confirm that quantity updates correctly
+
+---
+
+# Part 5 — Render the Cart (20 min)
+
+## Cart Component
+
+Create a `Cart` component and pass in:
+
+- `shoppingCart`
+- `dispatch`
+
+A basic cart row might display:
+
+```text
 Zoolab $12.07 qty: 2
-Lotstring $185.21 qty: 1
-Fintone $190.79 qty: 1
-Opela $29.83 qty: 3
+Opela $29.83 qty: 1
 ```
 
-How will you solve this problem? Think about where and when items are added to the cart? What type is the cart? If we add an item to the cart, how can we tell if an item of the same type already exists in the cart? 
+---
 
-#### ⭐ Stretch Challenge – Include Row Totals
+## Required Output
+
+Display at least:
+
+- item name
+- item price
+- item quantity
+
+---
+
+## Good Extension
+
+Add buttons for:
+
+- remove
+- increment
+- decrement
+
+Examples:
+
+```js
+<button onClick={() => dispatch({ type: 'increment', id: item.id })}>+</button>
+<button onClick={() => dispatch({ type: 'decrement', id: item.id })}>-</button>
+<button onClick={() => dispatch({ type: 'remove', id: item.id })}>Remove</button>
 ```
+
+---
+
+# Part 6 — Derived State: Totals and Counts (20 min)
+
+## Key Idea
+
+Not every value belongs in state.
+
+These values can usually be **calculated from the cart**:
+
+- total number of items
+- total cost
+- row total for each item
+
+That means you often do **not** need state like:
+
+```js
+const [totalCost, setTotalCost] = useState(0)
+```
+
+Instead, calculate totals from `shoppingCart`.
+
+---
+
+## Example
+
+```js
+const totalItems = shoppingCart.reduce((acc, item) => acc + item.qty, 0)
+
+const totalCost = shoppingCart.reduce(
+  (acc, item) => acc + item.price * item.qty,
+  0
+)
+```
+
+---
+
+## Your Task
+
+Add:
+
+- total item count
+- total cart cost
+
+Stretch:
+
+- row totals for each product
+
+Example:
+
+```text
 Zoolab $12.07 qty: 2 total: $24.14
-Lotstring $185.21 qty: 1 total: $185.21
-Fintone $190.79 qty: 1 total: $190.79
 Opela $29.83 qty: 3 total: $89.49
+
+Total items: 5
+Total cost: $113.63
 ```
 
-💡 **AI Prompt:**
-> "How do I group duplicate items and show a total in a shopping cart in React?"
+---
 
-#### 🏆 Super Stretch Challenge – Update the inventory
-When an Item is put in the cart decrease the number of units for that item stored in data. 
+## Checkpoint 3
 
-In order for this update values stored with `useMemo` `data` will need to be declared as a dependency to `useMemo` and declared inside of a component! 
+You should now have:
+
+- cart items rendering
+- quantities visible
+- total items calculated
+- total cost calculated
 
 ---
 
-## 📬 How to Submit
-1. Push your code to a GitHub repository
-2. Submit the link to GradeScope
+# Part 7 — Common Mistakes to Watch For (10 min)
+
+## Mistake 1 — Mutating State
+
+Bad:
+
+```js
+shoppingCart.push(product)
+return shoppingCart
+```
+
+Why this is a problem:
+
+- it mutates existing state
+- React expects a new value to be returned
 
 ---
 
-📎 Optional AI Prompts for Extra Help:
-- "Explain how the controlled component pattern works in React."
-- "How can I conditionally render a component in React based on state?"
-- "What’s the difference between useMemo and useEffect?"
-- "How can I use reduce to summarize values in a list?"
+## Mistake 2 — Storing Derived Values in State
 
-Good luck and happy coding! 🛍️
+Bad idea unless there is a strong reason:
 
+```js
+const [totalCost, setTotalCost] = useState(0)
+```
+
+If `totalCost` can be calculated from `shoppingCart`, calculate it instead.
+
+---
+
+## Mistake 3 — Reducer Logic Spread Across Components
+
+If your update rules are in 3 different components, the code becomes harder to follow.
+
+Try to keep cart update logic inside the reducer.
+
+---
+
+## Mistake 4 — Weak State Shape
+
+If each cart item does not have a `qty`, then grouped cart output becomes harder.
+
+State shape affects everything that comes after it.
+
+---
+
+# Part 8 — Work Time and Discussion Prep (20 min)
+
+## Final Build Time
+
+Use this time to:
+
+- clean up your reducer
+- improve cart rendering
+- add missing actions
+- make sure totals are correct
+- prepare to explain your design
+
+---
+
+## Prepare to Discuss
+
+Before the end of class, be ready to answer:
+
+1. What does one cart item look like in your app?
+2. Which actions did your reducer support?
+3. What values did you store in state?
+4. What values did you calculate from state?
+5. What part of your solution became harder than expected?
+
+---
+
+# Part 9 — End-of-Class Discussion (10 min)
+
+We will compare solutions as a class.
+
+Focus on:
+
+- state shape
+- reducer design
+- action names
+- trade-offs
+- bugs and fixes
+
+The goal is not to find one perfect answer.
+
+The goal is to understand how your state design affected the rest of the app.
+
+---
+
+## Definition of Done
+
+You are in good shape if your app:
+
+- uses `useReducer()` for cart state
+- adds items to the cart
+- updates quantity when an item is added again
+- renders cart items clearly
+- calculates total items and total cost
+- is ready to explain your state design
+
+---
+
+## Optional Stretch Challenges
+
+If you finish early, try one of these:
+
+### Stretch 1 — Clear Cart
+
+Add a button:
+
+```js
+dispatch({ type: 'clear' })
+```
+
+---
+
+### Stretch 2 — Decrement Quantity
+
+When quantity reaches 0, remove the item.
+
+---
+
+### Stretch 3 — Inventory Updates
+
+When a product is added to the cart, reduce the number of available units in inventory.
+
+This is harder because now you have **two related pieces of state**:
+
+- inventory
+- shopping cart
+
+Do not attempt this until your cart works.
+
+---
+
+## Reflection
+
+Write a short answer to these questions:
+
+1. Why is `useReducer()` a good fit for a shopping cart?
+2. What is the difference between stored state and derived state?
+3. What did your cart state look like, and why?
+4. What bug or design problem did you run into?
+
+---
+
+## Reminder
+
+A reducer is just a function.
+
+The important question is not:
+
+> “Did I use a hook?”
+
+The important question is:
+
+> “Did I choose a state shape and update pattern that makes the app easier to understand?”
