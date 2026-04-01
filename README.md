@@ -45,9 +45,9 @@ By the end of the course, you will be able to:
 |  2    | Wed, Mar 25 | [React, Props, and State] |
 |  -    | **Week 2**  | - | - | - |
 |  3    | Mon, Mar 30 | [React State Management] | - |
-|  4    | Wed, Apr  1 | [Conditional Rendering] | [Assignment 2 - Weather API] |
+|  4    | Wed, Apr  1 | [useEffect Hook] | [Assignment 2 - Weather API] |
 |  -    | **Week 3**  | - | - | - |
-|  5    | Mon, Apr  6 | [useEffect Hook] | - |
+|  5    | Mon, Apr  6 | [Conditional Rendering] | - |
 |  6    | Wed, Apr  8 | [Closures] | - |
 |  -    | **Week 4**  | - | - | - |
 |  7    | Mon, Apr 13 | Interview Challenge | [Assignment 3 - React + Redux Tutorial] |
