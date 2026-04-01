@@ -1,148 +1,200 @@
 # 🌦️ ACS 3330 – Assignment: React Weather App with OpenWeatherMap API
 
 ## 📝 Description
-In this assignment, you’ll build a React app that connects to the **OpenWeatherMap API** and displays real-time weather data for a given zip code. You’ll use the **controlled component pattern** for handling form input, and apply **conditional rendering** to manage asynchronous states (loading, errors, data display).
+In this assignment, you will build a React app that connects to the **OpenWeatherMap API** and displays real-time weather data for a given zip code.
 
-**Note!** I understand that you may have built this app or a similar app in the past. If that's the case, you can:
+This project will span **two weeks**:
 
-- Make an even better weather app! Look at the stretch challenges below. 
-- Use one of the other OpenWeatherMap API's, for example:  Hourly Forecast 4 days, 3-hour Forecast 5 days, Forecast 16 days, etc. 
-- Chose another alternative API. 
+- **Week 1:** Fetching data with `useEffect`
+- **Week 2:** Conditional rendering and UI states
+
+You will use:
+- the **controlled component pattern** for form input
+- **useEffect** for data fetching
+- **conditional rendering** to manage UI states
 
 ---
 
 ## 🎯 Learning Goals
-- Understand and apply the **Controlled Component Pattern** in React
-- Use **asynchronous fetch calls** to load data from an API
-- Apply **conditional rendering patterns** to build dynamic interfaces
+
+By completing this assignment, you will:
+
+- Use **controlled inputs** in React
+- Fetch data from an API using **useEffect**
+- Manage application state (`weather`, `loading`, `error`)
+- Build dynamic UI with **conditional rendering**
+
+---
+
+## 🧩 Assignment Structure
+
+### Week 1 — Data Fetching (`useEffect`)
+Focus on:
+- form input
+- API requests
+- managing state
+
+### Week 2 — Conditional Rendering
+Focus on:
+- displaying different UI states
+- improving user experience
+- handling loading and errors visually
 
 ---
 
 ## 🚀 Getting Started
-Create a new "React" project using your favorite starter code: CRA, Vite, etc. 
 
-You also need an account with https://openweathermap.org. Once you have registered your account, find your API Key, you'llneed this later. 
+1. Create a new React project (Vite recommended)
+2. Sign up for an API key at:
+   https://openweathermap.org
+3. Create a `.env` file:
 
----
+```env
+VITE_OPENWEATHER_API_KEY=your_key_here
+```
 
-## 📦 Video tutorials
-Follow along with the videos starting at **Lesson 03** in this playlist:
-📽️ https://www.youtube.com/playlist?list=PLoN_ejT35AEhmWcDTI6M--ha_E4lTyAtx
-
-Each challenge below builds on the previous one.
+⚠️ Important:
+- Restart your dev server after editing `.env`
+- Do NOT commit your API key
 
 ---
 
 ## 🔧 Challenges
 
-### 1️⃣ Create a Default React App
-- Scaffold a new project with your favorite React starter code (CRA, Vite, etc.)
+### 1️⃣ Create a React App
+- Scaffold a new project
+- Render a basic `Weather` component
 
-### 2️⃣ Register with OpenWeatherMap
-- Create a free account at https://openweathermap.org/
-- Get your API key
+---
+
+### 2️⃣ Controlled Input Form
+- Add a form to enter a **zip code**
+- Use state to control the input
+- Display the current zip code for testing
+
+💡 Stretch:
+- Add validation (5 digits)
+- Add unit selection (metric / imperial)
+
+---
 
 ### 3️⃣ Create a Weather Component
-- Add a `Weather` component and render a simple header
-- Replace default `App.js` content with your component
+- Replace default `App` content
+- Render a header and basic layout
 
-### 4️⃣ Controlled Input Form
-- Add a form to enter a **zip code**
-- Use state to control the form input (controlled component pattern)
-- Display the current zip code below the form for testing
+---
 
-💡 **Stretch Goals**
-- Add placeholder text and a `pattern` to restrict input to 5 digits
-- Add a dropdown or radio buttons to select temperature units (metric, imperial, standard)
+### 4️⃣ Fetch Weather Data (**useEffect Required**)
 
-🤖 **AI Research Prompts**
-- "What is the controlled component pattern in React?"
-- "How do I validate input using HTML pattern attribute?"
+You must:
 
-### 5️⃣ Fetch Weather Data
-- Use `fetch()` to request data based on the entered zip
-- To get started, load the weather data from OpenWeatherMap, and display it in the console, or display a value, like temperature, in your page.
+- Write a `fetchWeather(zip)` helper
+- Use `useEffect` to fetch data
+- Fetch when the user submits a zip code
 
-💡 **Stretch Goals**
+Your app must include state for:
+
+```js
+const [zip, setZip] = useState('')
+const [weather, setWeather] = useState(null)
+const [loading, setLoading] = useState(false)
+const [error, setError] = useState(null)
+```
+
+Minimum requirements:
+- Fetch from OpenWeatherMap using zip
+- Log response to console
+- Display at least ONE value (e.g. temperature)
+
+💡 Stretch:
 - Use `async/await`
-- Handle network errors with `.catch()` or `try/catch`
+- Handle errors with `try/catch`
 
-🤖 **AI Research Prompts**
-- "Tell me about JS fetch(), give me a beginner, intermediate, and advanced explanation."
-- "Explain JS Promise to me."
-- "Tell me about React's useEffect hook, give a beginner, intermediate, and advanced description."
-- "How does fetch work with async/await in React?"
-- "How do I handle errors when fetching data in React?"
+---
 
-**Important!** After writing your solution to solve this problem, ask the AI to review your code. 
-
-- "Review my code and give me your feedback. <paste your code here>"
-
-### 6️⃣ Display Weather with a Subcomponent
-- Move display logic into a `DisplayWeather` component
+### 5️⃣ Display Weather with a Subcomponent
+- Create a `DisplayWeather` component
 - Pass weather data as props
 
-💡 **Stretch Goal:** Use `cod === 200` to verify successful response, otherwise show an error message.
+💡 Stretch:
+- Check `cod === 200` for success
+- Display error messages
 
-🤖 **AI Research Prompts**
-- "How do I pass props between components in React?"
-- "What does the cod field in OpenWeatherMap API response mean?"
-- "What COD codes does OpenWeathermap use? What do these code mean?"
+---
 
-### 7️⃣ Conditional Rendering
-- Show different views depending on the app state:
-  - No data yet
-  - Error from the server
-  - Weather data loaded and ready
+### 6️⃣ Conditional Rendering (Week 2)
 
-🧠 [React Conditional Rendering](https://reactjs.org/docs/conditional-rendering.html)
+Next week, you will update your app to show:
 
-🤖 **AI Research Prompts**
-- "What are the different patterns for conditional rendering in React?"
-- "How do I show a loading message while waiting for data in React?"
+- No data yet
+- Loading state
+- Error state
+- Weather data
+
+Do NOT worry about this yet—we will cover it in the next lesson.
+
+---
+
+## ✅ Week 1 Minimum Requirements
+
+By the end of Week 1, your app must:
+
+- use a controlled input for zip code
+- use `useEffect` to fetch data
+- store weather data in state
+- manage `loading` and `error` (UI optional)
+- display at least one weather value
 
 ---
 
 ## 🎨 Stretch Challenges
-Choose any of the challenges below. 
 
-- Display more data: humidity, pressure, wind speed
-- Style the app with CSS or a CSS framework. Do your best to make your weather app look amazing! 
-  - Style the page and elements based on the weatherdata, for example: show change the background color to gray when it's raining, or dark blue at night. Get creative! 
-- Show a weather icon (e.g. `data.weather[0].icon`)
-- Add a button for **geolocation-based weather**
-  - Use `navigator.geolocation.getCurrentPosition()`
-  - Fetch data using OpenWeatherMap’s geolocation API
-- Use one of the other APIs supplied by OpenWeatherMap to display: 
-  - Hourly Forecast 4 days
-  - 3-hour Forecast 5 days
-  - Forecast 16 days
+Choose any:
 
-🔐 Note: For geolocation to work, in a React app you need to run in HTTPS mode:
-```bash
-HTTPS=true npm start
-```
-Check the docs of your starter code to see how to handle HTTPS. 
+- Show humidity, pressure, wind
+- Style UI based on weather conditions
+- Show weather icons
+- Add geolocation support
+- Use a different OpenWeather endpoint:
+  - hourly forecast
+  - 5-day forecast
+  - 16-day forecast
 
-💡 **Additional Stretch Challenge Ideas**
-- Allow users to search by city name or coordinates (lat/lon)
-- Display weather forecast for multiple days
-- Add loading animation while data is being fetched
-- Support saving a list of favorite zip codes and toggling between them
-- Use local storage to persist the last searched zip code
+---
+
+## ⚠️ Common Mistakes
+
+Avoid:
+
+- calling `fetch` inside render
+- forgetting dependency arrays
+- not handling errors
+- not resetting loading state
+- mixing up zip vs city queries
 
 ---
 
 ## 🧰 Assessment Rubric
-| Category              | Does Not Meet             | Meets Expectations                                       | Exceeds Expectations                                                                 |
-|-----------------------|---------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------------|
-| **Completed**         | Did not complete          | Completed challenges 1–3                                | Completed challenges 4+                                                             |
-| **Functionality**     | Not functional            | Displays weather and handles errors                     | Shows temp, description, and atmospheric conditions with CSS styling                |
-| **Code Quality**      | Inconsistent formatting   | Clean, readable code with consistent formatting         | Well-commented with expressive variable and function names                          |
-| **Architecture**      | All code in App.js        | 3 components used                                        | 5+ specialized components handling props and formatting                             |
-| **Work Ethic**        | No commit history         | Initial and mid-point commits                           | 3+ hours of thoughtful commits, documenting decisions and progress                  |
+
+| Category | Does Not Meet | Meets Expectations | Exceeds Expectations |
+|----------|--------------|-------------------|---------------------|
+| **Completion** | Incomplete | Week 1 requirements met | Week 2 + stretch features |
+| **Data Fetching (useEffect)** | No API call | Fetch works | Correct useEffect + clean logic |
+| **State Management** | Missing state | Basic state works | Clear separation (weather/loading/error) |
+| **Functionality** | Broken UI | Displays weather data | Rich data + polished UI |
+| **Architecture** | All in App | Uses components | Well-structured component system |
+| **Code Quality** | Messy | Clean code | Well-named, readable, documented |
 
 ---
 
-🎉 Good luck and have fun building your weather app!
+## 🎉 Final Note
 
+This assignment is about building a **real-world React app**.
+
+Focus on:
+
+- clean state management
+- correct use of `useEffect`
+- building features step-by-step
+
+You’ll improve the UI and polish next week.

@@ -238,17 +238,17 @@ Explain:
 
 # ⏱️ Part 4 — Activity: Predict Effect Behavior (20 min)
 
-## Activity (Pairs — 10 min)
+## Activity (Pairs — 12 min)
 
-Work with a partner.
+Work with a partner. For each snippet, do **three things**:
 
-For each example below, discuss:
+1. **When does it run?** (once / on change / every render)
+2. **What’s the risk?** (none / unnecessary calls / infinite loop / memory leak)
+3. **Fix it (if needed)** — write a corrected version (1–2 lines)
 
-- when does it run?
-- what could go wrong?
-- does it need cleanup?
+Write answers as short bullets.
 
-### Example A
+### A — Mount only
 
 ```jsx
 useEffect(() => {
@@ -256,7 +256,7 @@ useEffect(() => {
 }, [])
 ```
 
-### Example B
+### B — Depends on `city`
 
 ```jsx
 useEffect(() => {
@@ -264,7 +264,7 @@ useEffect(() => {
 }, [city])
 ```
 
-### Example C
+### C — Interval with cleanup
 
 ```jsx
 useEffect(() => {
@@ -273,7 +273,7 @@ useEffect(() => {
 }, [])
 ```
 
-### Example D
+### D — No dependency array
 
 ```jsx
 useEffect(() => {
@@ -281,9 +281,6 @@ useEffect(() => {
 })
 ```
 
-Write down one short note for each.
-
----
 
 ## Debrief
 
