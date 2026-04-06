@@ -1,302 +1,596 @@
-# **ACS 3330 - Lesson 5: Conditional Rendering in React**
+# ACS 3330 — Lesson 5: Conditional Rendering for API Apps
 
-## **Overview**
-Conditional rendering allows React components to **display different UI elements based on state or props**. This lesson covers:
-- **Conditional rendering patterns** in React.
-- **Higher-order components** for conditional logic.
-- **Using logical operators (`&&`, ternary `? :`, and `if/else`).**
+## Overview
 
-By the end, you'll build components that dynamically show and hide content.
+In the last lesson, you used `useEffect` to fetch data from the OpenWeather API.
+
+Now you have a new problem:
+
+> Your data does not exist immediately.
+
+This lesson is about **what your UI should display at each stage of an API request**.
+
+Instead of focusing on syntax, we will focus on **real application states**:
+- loading
+- error
+- success
+- empty
+
+By the end of this lesson, your weather app will behave like a real application.
 
 ---
 
-## **Learning Objectives**
+## Learning Objectives
+
 By the end of this lesson, you will be able to:
-✅ Identify **when and why** to use conditional rendering.  
-✅ Implement **multiple conditional rendering patterns**.  
-✅ Apply **React's logical operators** to control rendering.  
-✅ Use **higher-order components (HOCs)** to wrap components dynamically.  
+
+- design UI for **asynchronous data states**
+- safely render data from an API without crashes
+- choose appropriate conditional rendering patterns
+- distinguish between **loading, error, empty, and success states**
+- debug common rendering issues in React apps
 
 ---
 
-## **Review: React Forms and State**
-Before we begin, take a few minutes to answer:
+## Essential Question
 
-🔹 **Pop Quiz**
-- What is the **controlled component pattern** in forms?  
-- How does **lifting state** improve data flow in React?  
-- What are **derived state values** and why are they useful?
-
-🔹 **Checking Progress**
-- Where are you on the **API-powered app project**?  
-- What blockers have you encountered?  
+**What should your UI show when your data is not ready yet?**
 
 ---
 
-# **Part 1: Introduction to Conditional Rendering**
+## Before You Start
 
-### **1.1 What is Conditional Rendering?**
-Conditional rendering **determines which UI elements should be displayed based on state or props**.
+You should already have:
 
-📝 **Example: Rendering Based on Loading State**
+- a working OpenWeather API request using `useEffect`
+- state for:
+  - `weather`
+  - `loading`
+  - `error`
+- a basic component that displays weather data
+
+---
+
+# Part 1 — The Real Problem (10 min)
+
+Your weather app is not always in the same state.
+
+At different times, it might be:
+
+1. **Empty** → user hasn’t searched yet  
+2. **Loading** → waiting for API response  
+3. **Error** → request failed  
+4. **Success** → data loaded  
+
+If you don’t handle these correctly, your app will:
+
+- crash (`cannot read property of undefined`)
+- show blank screens
+- confuse users
+
+## Activity — Map Your App States (5–10 min)
+
+With a partner, list all possible states of your app:
+
+- before search
+- loading
+- error
+- success
+
+For each state, answer:
+
+- What should the user see?
+- What should NOT be visible?
+
+Be ready to share one decision with the class.
+
+---
+
+# Part 2 — Core UI States (30 min)
+
+Challenge: 
+- Create a new Vite project. 
+- Delete the contents of App.jsx
+
+## State 1 — Loading
+
 ```jsx
-function Weather({ isLoaded }) {
-  return isLoaded ? <WeatherData /> : <LoadingSpinner />;
+{loading && <p>Loading weather data...</p>}
+```
+
+## Build — Loading State
+
+- Define a state variable `loading` (default: `false`)
+- Add a button that toggles `loading`
+
+Example:
+
+```jsx
+const [loading, setLoading] = useState(false)
+
+<button onClick={() => setLoading(l => !l)}>
+  Toggle Loading
+</button>
+```
+
+## Test
+
+- Click the button
+- The loading message should appear and disappear
+
+---
+
+## State 2 — Error
+
+```jsx
+{error && <p className="error">Error: {error.message}</p>}
+```
+
+## Build — Error State
+
+- Define a state variable `error` (default: `undefined`)
+- Add a button to set an error
+- Add a button to clear the error
+
+Example:
+
+```jsx
+const [error, setError] = useState(undefined)
+
+<button onClick={() => setError({ message: 'Something went wrong' })}>
+  Set Error
+</button>
+
+<button onClick={() => setError(undefined)}>
+  Clear Error
+</button>
+```
+
+## Test
+
+- Click "Set Error" → error message appears
+- Click "Clear Error" → error message disappears
+
+---
+
+## State 3 — Success
+
+```jsx
+{weather && <WeatherDisplay data={weather} />}
+```
+
+## Build — Success State
+
+- Define a state variable `weather` (default: `undefined`)
+- Add a button that sets `weather` to mock data
+
+Example:
+
+```jsx
+const [weather, setWeather] = useState(undefined)
+
+<button onClick={() => setWeather({
+  name: 'London',
+  main: { temp: 280.32 },
+  weather: [{ description: 'light drizzle', icon: '09d' }]
+})}>
+  Set Weather
+</button>
+```
+
+## Test
+
+- Click the button
+- Weather UI should render
+
+---
+
+## State 4 — Empty
+
+```jsx
+{!weather && !loading && !error && <p>Search for a city</p>}
+```
+
+## Build — Empty State
+
+- Add a button that clears `weather`
+
+Example:
+
+```jsx
+<button onClick={() => setWeather(undefined)}>
+  Clear Weather
+</button>
+```
+
+## Test
+
+- Click "Clear Weather"
+- The empty state message should render
+
+---
+
+## Better Pattern: Early Returns
+
+This is often clearer:
+
+```jsx
+if (loading) {
+  return <p>Loading...</p>
+}
+
+if (error) {
+  return <p>Error: {error.message}</p>
+}
+
+if (!weather) {
+  return <p>Search for a city</p>
+}
+
+return <WeatherDisplay data={weather} />
+```
+
+---
+
+## Checkpoint 1
+
+Your app should now:
+
+- show loading message during fetch
+- show error message if request fails
+- show weather data when successful
+- show prompt when empty
+
+---
+
+# Part 2.5 — Real API Edge Case: 404 in Success Response (15 min)
+
+OpenWeather sometimes returns a **successful HTTP response** that contains an error:
+
+```js
+{ cod: 404, message: "city not found" }
+```
+
+This means:
+
+- `fetch` did NOT throw an error
+- `error` state may still be `undefined`
+- but the data is NOT valid weather data
+
+---
+
+## Build — Simulate 404 Response
+
+Add a button that sets `weather` to:
+
+```js
+{ cod: 404, message: "city not found" }
+```
+
+Example:
+
+```jsx
+<button onClick={() => setWeather({ cod: 404, message: 'city not found' })}>
+  Simulate 404
+</button>
+```
+
+---
+
+## Activity — What Happens?
+
+Try to render:
+
+```jsx
+<p>{weather.main.temp}</p>
+```
+
+### Questions:
+
+- Does this crash?
+- Why?
+- Is this a "success" state or an "error" state?
+
+---
+
+## Fix — Handle API-Level Errors
+
+Update your rendering logic to detect this case:
+
+```jsx
+if (weather?.cod === 404) {
+  return <p>City not found</p>
 }
 ```
 
-📌 **AI Prompt:** *"What are some real-world examples where conditional rendering is useful?"*
+---
+
+## Key Insight
+
+Not all errors come from `catch`.
+
+Sometimes:
+
+- the request succeeds
+- but the data itself represents an error
+
+You must handle BOTH:
+
+- network errors → `error`
+- API errors → `weather.cod`
 
 ---
 
-# **Part 2: Five Conditional Rendering Patterns in React**
+# Part 3 — Preventing Crashes (20 min)
 
-Remember **a component is a function that returns a block of JSX.** All of these conditional rendering patterns use that idea in different ways. 
+## The Most Common Bug
 
-## **Pattern 1: `if/else` Statements**
-Use `if/else` inside functions to **return different components**.
-
-📝 **Example: Displaying Weather Data When Loaded**
 ```jsx
-function Weather({ isLoaded }) {
-  if (isLoaded) {
-    return <WeatherData />;
-  }
-  return <LoadingSpinner />;
-}
+weather.main.temp
 ```
 
-✅ **Use Case:** When rendering **one component or another**.
-
-📌 **AI Prompt:** *"Why might `if/else` be a better choice than `&&` in some cases?"*
+This crashes when `weather` is `null`.
 
 ---
 
-## **Pattern 2: Element Variables**
-Store JSX elements in a **variable** and return it.
+## Fix 1 — Conditional Check
 
-📝 **Example: Showing Different Meals Based on Time of Day**
 ```jsx
-function WhatToEat({ time }) {
-  let element;
-  if (time === "morning") {
-    element = <Eggs />;
-  } else if (time === "lunch") {
-    element = <Burrito />;
-  } else {
-    element = <IceCream />;
-  }
-
-  return <div>{element}</div>;
-}
+weather && weather.main.temp
 ```
 
-✅ **Use Case:** When **more than two options** need rendering.
-
-📌 **AI Prompt:** *"How can you refactor this using an object lookup instead of `if/else`?"*
-
 ---
 
-## **Pattern 3: `&&` Logical Operator**
-Render **a component only if a condition is true**.
+## Fix 2 — Optional Chaining (Preferred)
 
-📝 **Example: Showing Unread Messages Notification**
 ```jsx
-<div>
-  <h1>Welcome!</h1>
-  {unreadMessages.length > 0 && (
-    <h2>You have {unreadMessages.length} unread messages.</h2>
-  )}
-</div>
+weather?.main?.temp
 ```
 
-✅ **Use Case:** When rendering **something or nothing**.
+---
 
-📌 **AI Debugging Prompt:** *"What happens if `unreadMessages` is `undefined`? How can we prevent errors?"*
+## Your Task
+
+Find any place where your app might crash and fix it using:
+
+- `&&`
+- or `?.`
 
 ---
 
-## **Pattern 4: Ternary (`? :`) Operator**
-Ternary operators provide a **one-line `if/else` statement**.
+## Checkpoint 2
 
-📝 **Example: Toggling Between Login and Logout Buttons**
+Your app should:
+
+- never crash due to missing data
+- safely render even before API response
+
+---
+
+# Part 4 — Choosing the Right Pattern (15 min)
+
+You don’t need 5 patterns. Focus on these:
+
+## `if/else` → full UI states
+
 ```jsx
-function LoginButton({ isLoggedIn }) {
-  return (
-    <div>
-      {isLoggedIn ? <LogoutButton /> : <LoginButton />}
-    </div>
-  );
-}
+if (loading) return <Loading />
 ```
 
-✅ **Use Case:** When rendering **one of two components** inline.
+## `&&` → show or hide
 
-📌 **AI Prompt:** *"How can I improve readability when using multiple ternary conditions?"*
-
----
-
-## **Pattern 5: Preventing Component Rendering with `null`**
-Returning `null` prevents React from rendering a component.
-
-📝 **Example: Warning Message That Can Be Hidden**
 ```jsx
-function Warning({ show, message }) {
-  if (!show) {
-    return null;
-  }
-  return <div>Warning: {message}</div>;
-}
+{error && <Error />}
 ```
 
-✅ **Use Case:** When a component **should disappear without breaking layout**.
+## ternary → one of two options
 
-📌 **AI Debugging Prompt:** *"Why is returning `null` better than using `display: none` in CSS?"*
-
----
-
-# **Part 3: Higher-Order Components (HOCs) for Conditional Rendering**
-
-### **3.1 What is a Higher-Order Component (HOC)?**
-A HOC **wraps another component** and adds extra functionality.
-
-📝 **Example: HOC for Showing/Hiding Components**
 ```jsx
-function withVisibility(Component) {
-  return function WrappedComponent({ isVisible, ...props }) {
-    return isVisible ? <Component {...props} /> : null;
-  };
-}
-
-const Fizz = withVisibility(() => <p>Fizz</p>);
-const Buzz = withVisibility(() => <p>Buzz</p>);
+{weather ? <Weather /> : <Empty />}
 ```
 
-✅ **Use Case:** When **multiple components** need similar conditional logic.
+---
 
-📌 **AI Prompt:** *"How do HOCs compare to hooks for conditional logic?"*
+## Rule of Thumb
+
+- complex state → use `if/else`
+- optional UI → use `&&`
+- two options → use ternary
 
 ---
 
-# **Part 4: Stretch Challenges**
+## Activity — Debug This UI
 
-### **💡 Challenge 1: Expand the `WhatToEat` Component**
-- Modify `WhatToEat` to **include more meal times**.
+This code has a problem:
 
-### **💡 Challenge 2: Create a "Dark Mode" Toggle**
-- Add a **toggle switch** that **conditionally applies dark mode styling**.
-
-### **💡 Challenge 3: Make a Reusable HOC for Authentication**
-- Create an HOC that **hides components unless a user is authenticated**.
-
-📌 **AI Stretch Prompt:** *"How can HOCs be used to enforce user authentication?"*
-
----
-
-# **Part 4: Stretch Challenges (OpenWeather API Edition 🌦️)**  
-
-### **💡 Challenge 4: Display an Error Message When the API Fails**  
-- Modify your OpenWeather API request to **detect errors** (e.g., invalid ZIP codes).  
-- Use **conditional rendering** to **show an error message** when a request fails.  
-
-📝 **Example: Show Error Message If API Request Fails**
 ```jsx
-{error && <p className="error">⚠️ Error: {error.message}</p>}
+{weather && <Weather />}
+{loading && <Loading />}
 ```
 
-📌 **AI Debugging Prompt:** *"How do I check for errors in an API response before rendering data?"*
+### Questions:
+
+- What happens if both are true?
+- What UI will the user see?
+- Is this correct?
+
+Fix it using `if/else` or early returns.
 
 ---
 
-### **💡 Challenge 5: Show a Loading Spinner While Fetching Weather Data**  
-- Add a **loading state** when fetching data.  
-- Use **conditional rendering** to display **a spinner or “Loading…” message** before the API response returns.  
+# Part 5 — Build Your Weather UI (30–40 min)
 
-📝 **Example: Display a Loading Message While Fetching Data**
+## Required Features
+
+Your app must:
+
+- handle loading state
+- handle error state
+- handle empty state
+- safely render weather data
+
+---
+
+## Suggested Structure
+
 ```jsx
-{loading ? <p>Loading weather data...</p> : <WeatherDisplay data={weather} />}
+if (loading) return <Loading />
+if (error) return <Error message={error.message} />
+if (!weather) return <Empty />
+
+return <WeatherDisplay data={weather} />
 ```
 
-📌 **AI Prompt:** *"What are the benefits of showing a loading state in API-driven apps?"*
+---
+
+## Checkpoint 3
+
+Your app should feel stable:
+
+- no crashes
+- no undefined errors
+- clear UI at every stage
 
 ---
 
-### **💡 Challenge 6: Show a "Last Updated" Timestamp**  
-- Use **state** to store the **last updated time** for the weather data.  
-- Conditionally render the timestamp **only when fresh data is available**.  
+# Part 6 — Enhancements (Stretch Work)
 
-📝 **Example: Displaying Last Updated Time**
+## Stretch 1 — Weather Icon
+
 ```jsx
-{weather && <p>Last updated: {new Date(lastUpdated).toLocaleTimeString()}</p>}
+{weather && (
+  <img 
+    src={`https://openweathermap.org/img/wn/${weather.icon}.png`} 
+    alt={weather.description} 
+  />
+)}
 ```
 
-📌 **AI Debugging Prompt:** *"How can I format the timestamp for better readability?"*
-
 ---
 
-### **💡 Challenge 7: Change Background Based on Weather Conditions**  
-- Use **conditional rendering** to apply **different background colors or images** based on the current weather.  
+## Stretch 2 — Dynamic Background
 
-📝 **Example: Setting the Background Dynamically**
 ```jsx
-const background = weather?.main === "Rain" ? "rainy-bg" : "sunny-bg";
-return <div className={background}>{weather.main}</div>;
+const bg = weather?.main === "Rain" ? "rainy" : "sunny"
+return <div className={bg}>...</div>
 ```
 
-📌 **AI Stretch Prompt:** *"How can I use CSS classes dynamically in React for theming?"*
-
 ---
 
-### **💡 Challenge 8: Display a Weather Icon Instead of Text**  
-- Use **conditional rendering** to **display weather icons** from OpenWeatherMap instead of just text descriptions.  
+## Stretch 3 — Last Updated
 
-📝 **Example: Rendering an Icon Based on API Data**
 ```jsx
-{weather && <img src={`https://openweathermap.org/img/wn/${weather.icon}.png`} alt={weather.description} />}
+{weather && (
+  <p>Last updated: {new Date(lastUpdated).toLocaleTimeString()}</p>
+)}
 ```
 
-📌 **AI Prompt:** *"What’s the best way to handle images dynamically in React?"*
-
 ---
 
-### **💡 Challenge 9: Suggest an Outfit Based on the Temperature**  
-- Use **conditional logic** to **display outfit suggestions** based on the weather.  
-  - 🌡️ **Below 40°F** → "Wear a warm coat and gloves!"  
-  - ☀️ **Above 70°F** → "A T-shirt and shorts should be fine!"  
+## Stretch 4 — Outfit Suggestion
 
-📝 **Example: Dynamic Outfit Suggestions**
 ```jsx
-const outfitSuggestion =
-  temperature < 40 ? "Wear a warm coat!" :
-  temperature > 70 ? "T-shirt and shorts!" :
-  "A light jacket should be fine.";
-  
-return <p>{outfitSuggestion}</p>;
+const suggestion =
+  temp < 40 ? "Wear a coat" :
+  temp > 70 ? "T-shirt weather" :
+  "Light jacket recommended"
+
+return <p>{suggestion}</p>
 ```
 
-📌 **AI Stretch Prompt:** *"How can I make these suggestions more personalized?"*
+---
+
+## Stretch 5 — Better Empty State
+
+Replace:
+
+```jsx
+<p>Search for a city</p>
+```
+
+With a more polished UI.
 
 ---
 
-## **Final Thoughts**
-- These **stretch challenges** encourage applying **conditional rendering** in **real-world API-driven apps**.  
-- They also introduce **UI enhancements**, **error handling**, and **dynamic styling**.  
+# Part 7 — Common Bugs (10 min)
 
-📌 **AI Final Reflection Prompt:** *"How does conditional rendering improve the user experience in an API-based app?"*
+## ❌ Crash: Cannot read property of undefined
 
----
+Cause:
+- rendering before data exists
 
-# **Final Thoughts**
-- **Use `if/else` for clear branching logic.**
-- **Use `&&` when rendering something or nothing.**
-- **Use ternary `? :` when choosing between two components.**
-- **Use higher-order components (HOCs) to wrap multiple components with shared logic.**
+Fix:
 
-📌 **AI Reflection Prompt:** *"How would you explain conditional rendering to a beginner? Get AI feedback on your explanation!"*
+```jsx
+weather?.main?.temp
+```
 
 ---
 
-## **After Class**  
-- Review **React’s Conditional Rendering Docs**: [React Docs](https://react.dev/learn/conditional-rendering).
-- Apply these **stretch challenges** in **Assignment 2: OpenWeather API App**.  
-- Explore **React’s official docs on Conditional Rendering**: [React Docs](https://react.dev/learn/conditional-rendering).  
+## ❌ UI flickers or disappears
+
+Cause:
+- incorrect condition order
+
+Fix:
+- check `loading` first
+- then `error`
+- then `data`
+
+---
+
+## ❌ Nothing renders
+
+Cause:
+- missing return in conditional
+
+Fix:
+- ensure every branch returns JSX
+
+---
+
+# Part 8 — Discussion & Reflection (10 min)
+
+## Group Discussion
+
+In small groups, compare your apps:
+
+- How did you structure your conditions?
+- Did anyone use a different approach?
+- Which version is easier to understand?
+
+Choose one example to share with the class.
+
+---
+
+## Reflection
+
+Answer:
+
+1. What states does your app handle?
+2. What caused the most bugs?
+3. Where did you use `&&`, ternary, or `if/else`?
+4. How did conditional rendering improve your app?
+
+---
+
+# Definition of Done
+
+Your app:
+
+- does not crash
+- handles loading, error, empty, and success states
+- safely renders API data
+- has clear UI feedback for the user
+
+---
+
+# Final Thoughts
+
+Conditional rendering is not about syntax.
+
+It’s about:
+
+> Designing UI that behaves correctly when your data changes.
+
+If your app works in all states, you’ve done it right.
