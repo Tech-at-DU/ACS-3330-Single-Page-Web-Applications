@@ -1,262 +1,340 @@
-### **ACS 3330 - Lesson: Closures in JavaScript**
+# **ACS 3330 — Lesson: Closures & Async JavaScript**
 
-*Understanding closures and their impact on JavaScript and React*
-
----
-
-## ⚡ AI-Powered Learning Challenge
-
-AI can help clarify concepts, review code, and push your thinking—but only if you engage with it critically. Here are two exercises to practice:
-
-### 🧠 1. Check Your Understanding
-Pick a concept we’ve covered so far—like `useState`, `useEffect`, or React props.
-
-**Prompt:**  
-```
-Check my understanding of <concept>. <Write your explanation here>
-```
-
-> ✅ After AI responds: Does the feedback confirm your understanding? What surprised you? Did you learn something new?
-
-### 🔍 2. Code Review
-Grab a code snippet you’ve written recently.
-
-**Prompt:**  
-```
-Code review and give me feedback on this code I have written: <your code>
-```
-
-> ✅ After AI responds: Do you agree with the feedback? Can you explain the reasoning behind any suggested changes?
+*How JavaScript handles time, state, and async behavior (and why your React code sometimes breaks)*
 
 ---
 
-### 4. **Optional Bonus: Debugging Drill**
-Help students see AI as a debugging ally:
+## 🎯 Lesson Goal
 
-**Prompt:**  
-```
-I'm getting this error: <error>. Here's the code: <code>. What's going wrong and how can I fix it?
-```
+> Closures are what allow functions to remember values when they run later.  
+> That’s why callbacks, promises, and async/await all work.
 
 ---
 
-### 📘 Final Tip
-Always ask yourself: *Do I understand the “why” behind the AI’s response?* If not, dig deeper. That’s where real learning happens.
+## Section 1 — Functions That Run Later (Closures + Callbacks)
+
+### Core Idea
+
+A function can run later and still remember variables from when it was created.  
+That is a **closure**.
 
 ---
 
-## **Overview**
-
-Closures are a **fundamental concept in JavaScript** that allow functions to **remember variables from their original scope** even after they have executed.
-
-Closures are important for:
-
-- **Callbacks and event handlers** (functions remembering variables).
-- **Managing state and encapsulation** (data hiding).
-- **Avoiding common pitfalls** (stale closures, memory leaks).
-- **Understanding React behavior** (fixing stale closures in `useEffect`).
-
-By the end of this lesson, you will be able to:
-- ✅ **Define closures** and explain how they work.
-- ✅ **Use closures in everyday programming** for state management.
-- ✅ **Fix stale closures in React applications**.
-
-Read what JavaScript.info has to say about variable scope and closures: https://javascript.info/closure
-
----
-
-**Be sure to try these examples with real code. Check the results in the console or the terminal!**
-
-If you're not sure how to do that you can ask the AI, the instructor, or classmates!  
-
-## **Review: Function Scope & Lexical Environment**
-
-Before diving into closures, let’s revisit **scope**.
-
-### 🔹 **Function Scope vs. Block Scope**
+### Example
 
 ```js
-function foo() {
-  var a = 42; // Function scope
-}
+let message = "Hello";
 
-if (true) {
-  let b = 99; // Block scope
-}
+setTimeout(() => {
+  console.log(message);
+}, 1000);
 
-{
-  let c = 88; // Block scope (note! this is not an object!)
-}
-
-console.log(a, b, c) // What happens here? 
+message = "Goodbye";
 ```
 
-📌 **AI Prompt:** *"What happens if you try to access `a`, `b`, and `c` outside their scopes?"*
+### Questions
 
-📌 **AI Prompt:** *"Can you create scope with just `{}` in JS?"*
+- What prints?
+- Why?
 
 ---
 
-# **Part 1: Closures and Functions**
+### Key Takeaways
 
-A **closure** happens when a function **remembers** variables from its parent function, even after the parent function has returned.
-
-### **🔹 Example: A Function That Remembers Its Variables**
-
-```js
-function makeCounter() {
-  let count = 0;
-
-  return function() {
-    count += 1;
-    return count;
-  };
-}
-
-const counter1 = makeCounter();
-console.log(counter1()); // 1
-console.log(counter1()); // 2
-console.log(counter1()); // 3
-
-// Challenge: Make a second counter, what happens here?
-// const counter2 = makeCounter();
-// console.log(counter2()); // ?
-// console.log(counter2()); // ?
-```
-
-✅ **Concept:** The **inner function** has access to `count`, even after `makeCounter()` has returned.
-
-📌 **AI Debugging Prompt:** *"Why does `counter1` still remember `count`?"*
+- `setTimeout` uses a **callback**
+- The callback runs later
+- It still remembers variables → **closure**
 
 ---
 
-# **Part 2: Closures as Variables Captured by Function Scope**
-
-Closures **retain variables from their original function scope**, even after execution.
-
-### **🔹 Example: Closures in a Loop (`var` vs. `let`)**
+### Activity — Predict the Output
 
 ```js
-const buttons = [];
+function test() {
+  let value = 0;
+
+  setTimeout(() => {
+    console.log(value);
+  }, 1000);
+
+  value = 5;
+}
+
+test();
+```
+
+👉 What prints? Why?
+
+---
+
+### Important Insight
+
+> Closures capture variables, not values.
+
+---
+
+## Section 2 — When Closures Go Wrong
+
+### Example
+
+```js
 for (var i = 0; i < 3; i++) {
-  buttons.push(() => console.log(i));
+  setTimeout(() => console.log(i), 1000 * i);
 }
-
-buttons[0](); // 3
-buttons[1](); // 3
-buttons[2](); // 3
 ```
 
-📌 **Why?** `var` is **function-scoped**, so all callbacks share the same `i`, which has already reached `3`.
+### Questions
 
-✅ **Fix:** Use **`let`** (block-scoped) or an **IIFE (Immediately Invoked Function Expression)**:
+- What prints?
+- Why?
+
+---
+
+### Fix
 
 ```js
-// Note! var has become let here! 
 for (let i = 0; i < 3; i++) {
-  buttons.push(() => console.log(i));
+  setTimeout(() => console.log(i), 1000 * i);
 }
-// Now what happens?
-buttons[0](); // ?
-buttons[1](); // ?
-buttons[2](); // ?
 ```
-
-📌 **AI Debugging Prompt:** *"What happens if we replace `var` with `let`?"*
 
 ---
 
-# **Part 3: Using Closures in Everyday Programming**
+### Key Idea
 
-Closures **help manage state without global variables**.
+- `var` → one shared variable
+- `let` → new variable per iteration
 
-### **🔹 Example: Data Hiding with Closures**
+👉 Closures expose how scope really works
+
+---
+
+## Section 3 — Promises & async/await (Same Idea, New Syntax)
+
+### How JavaScript Runs Async Code (Simplified)
+
+JavaScript runs one thing at a time.
+
+When you use async functions like `setTimeout`, `fetch`, or `.then()`:
+
+1. The function is scheduled to run later
+2. JavaScript keeps running the rest of your code
+3. When the async work is ready, the callback is added to a queue
+4. JavaScript runs it after the current code finishes
+
+---
+
+### Example
 
 ```js
-function createBankAccount(initialBalance) {
-  let balance = initialBalance;
+console.log("start");
 
-  return {
-    deposit(amount) {
-      balance += amount;
-      return balance;
-    },
-    withdraw(amount) {
-      balance -= amount;
-      return balance;
-    },
-    checkBalance() {
-      return balance;
-    }
-  };
-}
+setTimeout(() => {
+  console.log("inside timeout");
+}, 0);
 
-const myAccount = createBankAccount(100);
-console.log(myAccount.deposit(50)); // 150
-console.log(myAccount.withdraw(30)); // 120
-console.log(myAccount.checkBalance()); // 120
+console.log("end");
 ```
 
-✅ **Concept:** `balance` is **private**—it can’t be modified outside `createBankAccount`.
+### Question
 
-📌 **AI Prompt:** *"Why can’t we directly access `balance` from `myAccount`?"*
+What prints?
 
 ---
 
-# **Part 4: Closures & Callbacks in React Applications**
+### Answer
 
-Closures are **essential** in React, but they **can cause stale closures**.
+<details>
+<summary>Show answer</summary>
 
-### **🔹 Example: Stale Closures in React**
+```
+start
+end
+inside timeout
+```
 
-```jsx
-import { useState, useEffect, useRef, useCallback } from "react";
+</details>
 
-function WatchCount() {
-  const [count, setCount] = useState(0);
+---
 
-  useEffect(() => {
-    setInterval(() => {
-      console.log(`Count is: ${count}`); // ❌ What will this log?
-    }, 2000);
-  }, []);
+### Key Idea
 
-  return (
-    <div>
-      {count}
-      <button onClick={() => setCount(count + 1)}>Increase</button>
-    </div>
-  );
+> Async callbacks don’t interrupt your code.  
+> They wait their turn.
+
+---
+
+### Why This Matters
+
+- Your callback runs later
+- It uses a closure
+- It may see updated (or stale) values
+
+👉 This is why closures + async behavior are connected
+
+---
+
+### What is a Promise?
+
+A **Promise** is an object that represents a value that will exist in the future.
+
+It has three states:
+
+- **pending** → still waiting for the result
+- **fulfilled** → operation succeeded
+- **rejected** → operation failed
+
+Instead of getting the value immediately, you attach a callback using `.then()`:
+
+```js
+promise.then(result => {
+  console.log(result);
+});
+```
+
+👉 The function passed to `.then()` is a **callback**
+👉 That callback uses a **closure** to access variables
+
+---
+
+### Example: Promise
+
+```js
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+    console.log(data);
+  });
+```
+
+### Questions
+
+- Where does `data` come from?
+- Why is it available here?
+
+---
+
+
+### What is async/await?
+
+An `async` function always returns a **Promise**.
+
+```js
+async function example() {
+  return 42;
+}
+
+// This actually returns: Promise { 42 }
+```
+
+---
+
+### What does `await` do?
+
+`await` pauses execution of the function until a Promise resolves.
+
+```js
+const res = await fetch(url);
+```
+
+This means:
+
+- The function stops at this line
+- It waits for the Promise to resolve
+- Then continues with the resolved value
+
+---
+
+### Important Rules
+
+- `await` can **only be used inside an `async` function`
+- `async/await` is just cleaner syntax for `.then()`
+
+These two are equivalent:
+
+```js
+fetch(url).then(res => res.json());
+```
+
+```js
+const res = await fetch(url);
+const data = await res.json();
+```
+
+👉 Under the hood, this is still callbacks + closures
+
+---
+
+### Example: async/await
+
+```js
+async function getWeather() {
+  const res = await fetch(url);
+  const data = await res.json();
+  console.log(data);
 }
 ```
 
-📌 **AI Prompt:** *"What do you think will happen when you click the button? Will the count update in the console?"*
+---
 
-### **Fix 3: Use `useCallback` to Prevent Stale Closures**
+### Unifying Idea
+
+| Concept | What it really is |
+|--------|------------------|
+| callback | function that runs later |
+| closure | how it remembers variables |
+| promise | organized callbacks |
+| async/await | cleaner syntax for promises |
+
+---
+
+### Key Insight
+
+> Closures are what make async JavaScript possible.
+
+---
+
+## Section 4 — React: Stale Closures & Real Bugs
+
+### Example
 
 ```jsx
-const updateCount = useCallback(() => {
-  setCount(prev => prev + 1);
-}, []);
-
 useEffect(() => {
-  setInterval(updateCount, 2000);
+  setInterval(() => {
+    console.log(count);
+  }, 2000);
 }, []);
 ```
 
-📌 **AI Prompt:** *"How does `useCallback` prevent stale closures in React?"*
+### Questions
 
---- 
+- Why doesn’t `count` update?
 
-### **Fix 4: Use set state callback to Prevent Stale Closures**
+---
 
-In cases where you are setting state within a clsoure, you can provide a callback as the argument to your set state function. This callback receives the latest value of state. 
+### Explanation
+
+- The callback runs later
+- It captured the **old value of `count`**
+- → stale closure
+
+---
+
+### Fix 1 — Functional State Update
+
+```jsx
+setCount(prev => prev + 1);
+```
+
+---
+
+### Fix 2 — Safer Interval Pattern
 
 ```jsx
 useEffect(() => {
   const interval = setInterval(() => {
-    setCount(prev => { // prev is the latest value for count
-      console.log(`Count is: ${prev}`);
+    setCount(prev => {
+      console.log(prev);
       return prev;
     });
   }, 2000);
@@ -264,42 +342,36 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 ```
-📌 **AI Prompt:** *"Explain set state callback for React `useState`"*
 
 ---
 
-# **Part 5: Closures in Event Listeners**
+### Apply to Your Weather App
 
-### **🔹 Example: Using Closures in Event Listeners**
+Ask yourself:
 
-```js
-function createClickHandler(color) {
-  return function () {
-    console.log(`You clicked a ${color} button!`);
-  };
-}
-
-const redButton = document.querySelector("#red");
-const blueButton = document.querySelector("#blue");
-
-redButton.addEventListener("click", createClickHandler("red"));
-blueButton.addEventListener("click", createClickHandler("blue"));
-```
-
-📌 **AI Debugging Prompt:** *"Why does each button remember its own color?"*
+- Where are you using async code?
+- What variables are captured in callbacks?
+- Could anything be stale?
 
 ---
 
-## **Final Thoughts**
+### Final Takeaway
 
-- ✅ **Closures allow functions to "remember" variables after execution.**
-- ✅ **Closures help in private variables, event handlers, and optimizations.**;
-- ✅ **In React, stale closures happen in `useEffect` when functions capture old values.**
-
-📌 **AI Reflection Prompt:** *"Review my explanation of closures to check my understanding. <Insert your explanation here>"*
+> If your async code behaves strangely, it’s usually a closure problem.
 
 ---
 
-## **📚 After Class**
+## Reflection
 
-- **Read more about closures**: [JavaScript.info: Closures]([https://javascript.info/closure](https://javascript.info/closure))
+1. What is a closure in your own words?
+2. How do callbacks use closures?
+3. Why do stale closures happen in React?
+4. Where might this affect your weather app?
+
+---
+
+## Final Thought
+
+Closures are not just a JavaScript feature.
+
+They are the reason async JavaScript—and React—work the way they do.
