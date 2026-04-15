@@ -11,6 +11,23 @@ In this lesson you will feel the problem that global state management solves bef
 
 ---
 
+## Interview Context
+
+This lesson is structured as a coding interview simulation.
+
+You will be given a codebase and asked to add a feature — exactly the kind of task you might face in a real front-end interview. Before you write any code, you are expected to read the codebase, understand it, and ask clarifying questions.
+
+Interviewers are not just evaluating whether you can add the feature. They are evaluating:
+
+- Whether you read the existing code before touching it
+- Whether you notice architectural problems
+- Whether you can articulate tradeoffs
+- How you respond when a better approach is suggested
+
+**Before you write any code, write down the questions you would ask the interviewer.**
+
+---
+
 ## Part 1 — The Problem (45 min)
 
 ### What is Prop Drilling?
@@ -62,6 +79,22 @@ Open [GameArea.jsx](../clicker-game/src/components/GameArea.jsx) and look at its
 
 ---
 
+### The Interview Problem
+
+The interviewer says:
+
+> "We have a clicker game. We'd like to add a click counter — track the total number of clicks and show it in the header. How would you approach this?"
+
+**Before you start coding, write down your clarifying questions.** Some good ones to consider:
+
+- Where should this state live?
+- Is this the only place the click count will be displayed?
+- Are there more features like this planned?
+
+Bring your questions to the instructor before you start.
+
+---
+
 ### Challenge — Add a Click Counter
 
 Add a new feature to the app: **track the total number of clicks** and display it in the Header.
@@ -78,17 +111,24 @@ To complete this you will need to:
 
 Work through it. Notice what you have to touch and why.
 
-**When you are done, answer these questions:**
+---
 
-- How many files did you have to modify?
-- Did `GameArea` need to know about `clicks` at all?
-- What would happen if `Clicker` was nested one level deeper?
+### Interview Follow-up Questions
+
+A good interviewer will not just accept your solution — they will probe it. After you finish, be ready to answer:
+
+- How many files did you have to modify to add one piece of state?
+- Did `GameArea` need to know about `clicks` at all? Why did it have to?
+- Imagine this app has 20 components instead of 5. What happens when the next feature request comes in?
+- Is there a better way to structure this?
+
+This last question is the one that leads somewhere. The interviewer is looking to see if you can identify the problem yourself — not just complete the task.
 
 ---
 
 ### Discussion
 
-Before the break, talk through what you found. This is the core question:
+Before the break, the core question:
 
 > If `GameArea` does not use `score`, `multiplier`, or `clicks` — why does it have to know about them?
 
@@ -101,6 +141,16 @@ The answer is: it shouldn't. That is exactly the problem global state solves.
 ---
 
 ## Part 2 — The Solution (50 min)
+
+### The Interviewer Responds
+
+After you walk through your prop drilling solution, the interviewer says:
+
+> "That works. How would you feel about this approach if the app had 20 components? Is there anything you'd do differently?"
+
+This is a senior developer's answer to that question.
+
+---
 
 ### Introducing Zustand
 
@@ -312,7 +362,21 @@ Hint: You will need `useEffect` in a component, but the state all lives in the s
 
 ---
 
-## Debrief — Connecting to Redux (10 min)
+## Debrief — What Interviewers Are Looking For (10 min)
+
+In a real interview, the prop drilling problem is often used to assess seniority. Here is what different levels of answer look like:
+
+| Level | Response |
+|---|---|
+| **Junior** | Implements prop drilling without noticing the problem |
+| **Mid** | Implements it, notices it feels awkward, mentions it could be cleaner |
+| **Senior** | Asks upfront about app scale, proposes global state before writing a line |
+
+You do not need to be a senior developer to give a senior answer. You need to ask the right questions before you start coding.
+
+---
+
+## Connecting to Redux
 
 Zustand and Redux solve the same problem. The difference is structure and convention.
 
