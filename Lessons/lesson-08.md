@@ -1,210 +1,348 @@
-# 🧠 ACS 3330 – Lesson 8: Introduction to Redux
+# Lesson 8: Application State
 
-## 📝 Overview
-Redux is a pattern and library for managing and updating **application state**. It helps with predictable state management across components — especially when you have deeply nested components or shared global state.
+## Overview
 
-In this lesson, you’ll:
-- Learn the difference between **component state** and **application state**
-- Create a **Redux store** and a **reducer**
-- Use `useDispatch()` to send actions
-- Use `useSelector()` to read from state
-- Build a working shopping cart using Redux
+In this lesson you will feel the problem that global state management solves before you learn the solution. You will:
 
----
-
-## 📦 Component State vs. Application State
-In React, you’ve used `useState()` to manage **component-level state**. This is great when state is only used by one component.
-
-But when multiple components need access to the same data — like a shopping cart, theme, or user authentication — passing props up/down the chain becomes awkward.
-
-Redux solves this by providing a **single source of truth** (the store) and a **predictable way to update state** (actions & reducers).
-
-> 💡 AI Prompt: "What is a single source of truth?"
+- Identify the pain of **prop drilling** by working with a real app
+- Understand why component state breaks down as apps grow
+- Refactor the app to use **Zustand** — a minimal global state library
+- Connect these concepts to the Redux tutorial you are working on
 
 ---
 
-## 🔄 How Redux Works (Flux Pattern)
-Redux is inspired by Flux architecture:
+## Part 1 — The Problem (45 min)
 
-1. A **user triggers an action** (clicks a button)
-2. The component **dispatches** an action with `useDispatch()`
-3. The action goes to the **reducer**, which returns new state
-4. The Redux **store** holds this state
-5. Components **read from the store** with `useSelector()`
+### What is Prop Drilling?
 
-📌 Data flow is **unidirectional**. Think of it as a cycle:
+So far you have used `useState` to manage state inside a component. When a child component needs that state, you pass it as a prop. When a grandchild needs it, you pass it through the child. This is **prop drilling** — passing props through components that don't need them just to get data to components that do.
+
+This is fine for one or two levels. It breaks down when your app grows.
+
 ```
-UI → dispatch → reducer → store → UI
+App (owns score)
+ └── GameArea (doesn't need score, but must pass it)
+      └── Clicker (needs score)
 ```
 
-> 💡 AI Prompt: "In the context Redux, what is an action?"
-
-> 💡 AI Prompt: "In the context Redux, what is a reducer?"
-
-> 💡 AI Prompt: "In the context Redux, what is the store?"
+`GameArea` is stuck carrying state it has no use for. Every time you add a new piece of state, every component in the chain has to be updated.
 
 ---
 
-## 🛒 Example: Redux Shopping Cart
-Let’s make a product page and add Redux to manage the cart.
+### The Starter App
 
-### 📁 Folder Setup
-```
-src/
-  components/
-    ProductList.js
-    ShoppingCart.js
-  redux/
-    actions.js
-    reducer.js
-    store.js
-  App.js
-```
+Clone or download the starter app from the class repo. Then run it:
 
----
-
-### ⚙️ Step 1: Install Redux and React Redux
 ```bash
-npm install @reduxjs/toolkit react-redux
+npm install
+npm run dev
+```
+
+The app is a simple clicker game. Click the button to earn points. Buy upgrades to increase your multiplier.
+
+Take 10 minutes to read through the code before touching anything. Focus on:
+
+- Where does state live?
+- Which components use the state?
+- Which components only pass it along?
+
+**Component tree:**
+
+```
+App               → owns: score, multiplier
+├── Header        → receives: score
+└── GameArea      → receives: score, setScore, multiplier, setMultiplier
+    ├── Clicker   → receives: score, setScore, multiplier
+    └── UpgradeShop → receives: score, setScore, multiplier, setMultiplier
+```
+
+Open [GameArea.jsx](../clicker-game/src/components/GameArea.jsx) and look at its props. How many does it receive? How many does it actually use?
+
+> 💡 AI Prompt: "What is prop drilling in React and why is it a problem?"
+
+---
+
+### Challenge — Add a Click Counter
+
+Add a new feature to the app: **track the total number of clicks** and display it in the Header.
+
+Requirements:
+- Count every time the Click button is pressed
+- Display the total click count in the Header, next to the score
+
+To complete this you will need to:
+
+1. Add a `clicks` state to `App`
+2. Pass `clicks` and `setClicks` through `GameArea` to `Clicker`
+3. Pass `clicks` to `Header`
+
+Work through it. Notice what you have to touch and why.
+
+**When you are done, answer these questions:**
+
+- How many files did you have to modify?
+- Did `GameArea` need to know about `clicks` at all?
+- What would happen if `Clicker` was nested one level deeper?
+
+---
+
+### Discussion
+
+Before the break, talk through what you found. This is the core question:
+
+> If `GameArea` does not use `score`, `multiplier`, or `clicks` — why does it have to know about them?
+
+The answer is: it shouldn't. That is exactly the problem global state solves.
+
+---
+
+## Break (15 min)
+
+---
+
+## Part 2 — The Solution (50 min)
+
+### Introducing Zustand
+
+Zustand is a small global state library for React. It lets any component in your app read or update shared state directly — no props required.
+
+You do not need a Provider. You do not need to thread props through the tree. Any component can connect to the store and use it.
+
+Install it:
+
+```bash
+npm install zustand
 ```
 
 ---
 
-### 🧠 Step 2: Create the Store
-Create `redux/store.js`:
-```js
-import { configureStore } from '@reduxjs/toolkit'
-import shoppingCartReducer from './reducer'
+### Create the Store
 
-export const store = configureStore({
-  reducer: {
-    cart: shoppingCartReducer
-  }
-})
+Create a new file `src/store.js`:
+
+```js
+import { create } from 'zustand'
+
+const useGameStore = create((set) => ({
+  score: 0,
+  multiplier: 1,
+  clicks: 0,
+  click: () => set((state) => ({
+    score: state.score + state.multiplier,
+    clicks: state.clicks + 1
+  })),
+  buyUpgrade: () => set((state) => ({
+    score: state.score - state.multiplier * 10,
+    multiplier: state.multiplier + 1
+  }))
+}))
+
+export default useGameStore
 ```
 
-> 💡 AI Prompt: "When using Redux Toolkit, is the store made up of reducers?"
+The store holds **state** and **the functions that update it** in one place. Any component can import `useGameStore` and connect to it.
 
-> 💡 AI Prompt: "When using Redux Toolkit, how is the store structured and how does that structure relate to the reducers?"
+> 💡 AI Prompt: "What is Zustand and how does it compare to useState?"
+
+> 💡 AI Prompt: "In Zustand, what does the `set` function do?"
 
 ---
 
-### 🧠 Step 3: Define the Reducer
-Create `redux/reducer.js`:
-```js
-const initialState = []
+### Refactor App.jsx
 
-export default function shoppingCartReducer(state = initialState, action) {
-  switch (action.type) {
-    case 'ADD_ITEM':
-      return [...state, action.payload] // return new state!
-    default:
-      return state 
-  }
+With state now living in the store, `App` no longer needs `useState` at all. Remove the state and the props:
+
+```jsx
+import Header from './components/Header'
+import GameArea from './components/GameArea'
+import './App.css'
+
+function App() {
+  return (
+    <div className="app">
+      <Header />
+      <GameArea />
+    </div>
+  )
 }
+
+export default App
 ```
-
-📌 Important: Reducers must return **new state**, not mutate the existing one!
-
-> 💡 AI Prompt: "When using Redux, why do I need to return new state from a reducer?"
 
 ---
 
-### 🧠 Step 4: Provide the Store to the App
-Wrap your app with the Redux provider in `index.js`:
-```js
-import { Provider } from 'react-redux'
-import { store } from './redux/store'
+### Refactor GameArea.jsx
 
-<Provider store={store}>
-  <App />
-</Provider>
-```
+`GameArea` no longer receives or passes any props:
 
-The provider enables the `useSelector()` and `useDisptach()` hooks for all components in App. 
+```jsx
+import Clicker from './Clicker'
+import UpgradeShop from './UpgradeShop'
 
----
-
-### 🧠 Step 5: Dispatch from a Component
-In `ProductList.js`:
-```js
-import { useDispatch } from 'react-redux'
-
-const dispatch = useDispatch()
-
-function addToCart(item) {
-  // Dispatch an action
-  dispatch({ type: 'ADD_ITEM', payload: item })
+function GameArea() {
+  return (
+    <div className="game-area">
+      <Clicker />
+      <UpgradeShop />
+    </div>
+  )
 }
+
+export default GameArea
 ```
 
-> 💡 AI Prompt: "How do I structure Redux in a React app with multiple reducers?"
-
 ---
 
-### 🧠 Step 6: Read State with `useSelector()`
-In `ShoppingCart.js`:
-```js
-import { useSelector } from 'react-redux'
+### Refactor Header.jsx
 
-// Access state inside of a component
-const cartItems = useSelector(state => state.cart)
+`Header` reads directly from the store — no props:
 
-return (
-  <ul>
-    {cartItems.map((item, i) => (
-      <li key={i}>{item.name}</li>
-    ))}
-  </ul>
-)
+```jsx
+import useGameStore from '../store'
+
+function Header() {
+  const score = useGameStore((state) => state.score)
+  const clicks = useGameStore((state) => state.clicks)
+
+  return (
+    <header className="header">
+      <h1>Clicker Game</h1>
+      <span className="header-score">Score: {score}</span>
+      <span>Clicks: {clicks}</span>
+    </header>
+  )
+}
+
+export default Header
 ```
 
-> 💡 AI Prompt: "Why isn't my Redux store updating when I dispatch an action?"
-
 ---
 
-## 🧪 Challenge Prompts
+### Refactor Clicker.jsx
 
-### Challenge 1
-Add an item to the cart when a button is clicked.
+`Clicker` reads the `click` action from the store:
 
-### Challenge 2
-Display all items in the cart using `useSelector()`.
+```jsx
+import useGameStore from '../store'
 
-### Challenge 3
-Avoid duplicate items. If an item exists, increase the quantity.
+function Clicker() {
+  const click = useGameStore((state) => state.click)
+  const multiplier = useGameStore((state) => state.multiplier)
 
-### Challenge 4
-Calculate and display the total price using `reduce()`.
+  return (
+    <div className="clicker">
+      <button className="click-button" onClick={click}>
+        Click!
+      </button>
+      <p>+{multiplier} per click</p>
+    </div>
+  )
+}
 
-### Challenge 5
-Use a reducer to group cart items by ID and track quantity:
-```js
-case 'ADD_ITEM':
-  const found = state.find(item => item.id === action.payload.id)
-  if (found) {
-    return state.map(item => item.id === action.payload.id
-      ? { ...item, quantity: item.quantity + 1 }
-      : item)
-  }
-  return [...state, { ...action.payload, quantity: 1 }]
+export default Clicker
 ```
 
-> 💡 AI Prompt: "How do I update quantity in a Redux reducer?"
+---
+
+### Refactor UpgradeShop.jsx
+
+```jsx
+import useGameStore from '../store'
+
+function UpgradeShop() {
+  const score = useGameStore((state) => state.score)
+  const multiplier = useGameStore((state) => state.multiplier)
+  const buyUpgrade = useGameStore((state) => state.buyUpgrade)
+  const cost = multiplier * 10
+
+  return (
+    <div className="upgrade-shop">
+      <h2>Upgrades</h2>
+      <div className="upgrade">
+        <div>
+          <strong>Bigger Clicks</strong>
+          <p>Each click earns +1 more point</p>
+        </div>
+        <button onClick={buyUpgrade} disabled={score < cost}>
+          Buy ({cost} pts)
+        </button>
+      </div>
+      <p className="multiplier-display">Current multiplier: x{multiplier}</p>
+    </div>
+  )
+}
+
+export default UpgradeShop
+```
 
 ---
 
-## 🧠 Recap: Key Redux Concepts
-| Concept     | Description |
-|-------------|-------------|
-| **Action**  | A plain object with a `type` and optional `payload` |
-| **Reducer** | A pure function that returns new state |
-| **Store**   | The single global state container |
-| **Dispatch**| Sends an action to the reducer |
-| **Selector**| Reads from the store |
+### What Just Happened?
+
+Look at `App.jsx` and `GameArea.jsx`. They have no props. They pass nothing down. 
+
+Adding `clicks` to the Header required touching exactly two files: `store.js` and `Header.jsx`. Nothing in between had to change.
+
+Compare that to the prop drilling version, where you had to modify `App`, `GameArea`, `Clicker`, and `Header` just to thread one new value through.
+
+> 💡 AI Prompt: "What is a selector in Zustand and why should I only select the state I need?"
 
 ---
 
-## 📚 Further Reading
-- [Redux Toolkit Docs](https://redux-toolkit.js.org/)
-- [React Redux Quick Start](https://react-redux.js.org/introduction/quick-start)
+## Part 3 — Practice (35 min)
+
+### Challenge — Add a New Feature Using Zustand
+
+Add a **high score** to the game. The high score should update whenever the current score exceeds it.
+
+Requirements:
+- Track `highScore` in the store
+- Display it in the Header
+- Update it automatically whenever `score` exceeds it
+
+Do this without passing any props. Every change lives in `store.js` and the component that displays it.
+
+When you are done, notice how many files you touched. Compare that to what it would have taken with prop drilling.
+
+### Stretch — Add an Auto-Clicker Upgrade
+
+Add a second upgrade to `UpgradeShop` that, once purchased, automatically adds points every second.
+
+Hint: You will need `useEffect` in a component, but the state all lives in the store.
+
+---
+
+## Debrief — Connecting to Redux (10 min)
+
+Zustand and Redux solve the same problem. The difference is structure and convention.
+
+| | Zustand | Redux Toolkit |
+|---|---|---|
+| Store setup | `create()` — a few lines | `configureStore()` + slices |
+| State updates | Functions inside the store | Actions dispatched to reducers |
+| Reading state | `useGameStore((state) => state.x)` | `useSelector((state) => state.x)` |
+| Writing state | Call a function from the store | `useDispatch()` + an action |
+
+The tutorial you are working on uses Redux Toolkit. The concepts are the same — a single store, state that any component can read, actions that describe updates. Redux adds more ceremony, but that structure pays off in larger applications.
+
+When you see `useSelector` in your tutorial, think: *that's the Zustand selector I just wrote.* When you see `dispatch`, think: *that's the function I called from the store.*
+
+> 💡 AI Prompt: "How is Zustand different from Redux Toolkit? When would you choose one over the other?"
+
+---
+
+## Key Concepts
+
+| Concept | Description |
+|---|---|
+| **Prop drilling** | Passing props through components that don't use them |
+| **Global state** | State that lives outside the component tree, accessible anywhere |
+| **Store** | The single object that holds all global state |
+| **Selector** | A function that reads a specific slice of state from the store |
+
+---
+
+## Further Reading
+
+- [Zustand Docs](https://zustand-demo.pmnd.rs/)
+- [Redux Toolkit Quick Start](https://redux-toolkit.js.org/introduction/getting-started)
