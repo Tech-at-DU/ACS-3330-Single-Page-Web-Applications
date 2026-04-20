@@ -63,7 +63,7 @@ npm install @reduxjs/toolkit react-redux
 
 ## Part 2 — Build the Store (25 min)
 
-This part is instructor-led. The store layer introduces new APIs — `createSlice`, `configureStore`, and `Provider` — that you have not written before. Follow along, then you will use this as the foundation for the challenge.
+The store layer introduces new APIs — `createSlice`, `configureStore`, and `Provider` — that you have not written before. Follow along, then you will use this as the foundation for the challenge.
 
 ### Create the Slice
 
@@ -97,6 +97,7 @@ export default gameSlice.reducer
 
 Notice that `click` and `buyUpgrade` look like they mutate state directly. RTK uses a library called **Immer** under the hood, which intercepts these writes and produces a new state object safely. You can write it as if you're mutating — RTK handles immutability for you.
 
+> 💡 AI Prompt: "What is a mutation, and does it apply to Redux?"
 > 💡 AI Prompt: "What is Immer and why does Redux Toolkit use it?"
 
 ---
@@ -180,12 +181,25 @@ The interviewer adds a follow-up requirement:
 
 > "We'd also like to track a leaderboard — the top 5 scores. Can you add that as a separate slice?"
 
-Create a `leaderboardSlice.js` that:
-- Holds an array of top scores
-- Has an action to submit the current score
-- Only keeps the top 5, sorted highest first
+The finished feature should look something like this:
 
-Wire it into the store alongside `gameSlice`. This is the RTK pattern for real applications — one store, multiple slices, each responsible for its own domain.
+```
+Top Scores
+──────────
+1. 500
+2. 300
+3. 75
+```
+
+To build it you will need to:
+
+1. Create `src/store/leaderboardSlice.js` — state is an array of numbers, with one action: `submitScore`
+2. The `submitScore` reducer receives a score, adds it to the array, sorts highest first, and keeps only the top 5
+3. Add `leaderboardReducer` to `configureStore` alongside `gameReducer`
+4. Create a `Leaderboard` component that reads the scores with `useSelector` and renders the list
+5. Add a "Submit Score" button somewhere in the UI that dispatches `submitScore` with the current score as the payload
+
+The logic in step 2 is the core problem to solve. Figure out how to sort and trim the array inside a reducer.
 
 > 💡 AI Prompt: "How do I manage multiple slices in a Redux Toolkit store?"
 
