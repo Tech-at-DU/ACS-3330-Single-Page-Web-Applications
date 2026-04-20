@@ -53,13 +53,13 @@ By the end of the course, you will be able to:
 |  7    | Mon, Apr 13 | Interview Challenge | [Assignment 3 - React + Redux Tutorial] |
 |  8    | Wed, Apr 15 | [Application State] | - |
 |  -    | **Week 5**  | - | - | - |
-|  9    | Mon, Apr 20 | [Redux] | - |
-| 10    | Wed, Apr 22 | [React and Express] | [Assignment 4 - Custom Project] |
+|  9    | Mon, Apr 20 | [Redux] | [Assignment 4 - Custom Project] |
+| 10    | Wed, Apr 22 | [React and Express] | - |
 |  -    | **Week 6**  | - | - | - |
-| 11    | Mon, Apr 27 | [Tailwind CSS] | - |
-| 12    | Wed, Apr 29 | [Framer Motion] | - |
+| 11    | Mon, Apr 27 | [Tailwind CSS] | A4 Milestone 1 — idea, API, store set up |
+| 12    | Wed, Apr 29 | [Framer Motion] | A4 Milestone 2 — core features working |
 |  -    | **Week 7**  | - | - | - |
-| 13    | Mon, May  4 | [RTK Query] - [More Motion] | - | 
+| 13    | Mon, May  4 | [RTK Query] - [More Motion] | [Assignment 4 - Custom Project] due |
 | 14    | Wed, May  6 |  | Final Assessment | - |
 |  -    | **Week 8**  | - | - | - |
 | 15    | Mon, May 11 | - Final Presentation| - | 

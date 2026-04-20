@@ -1,280 +1,363 @@
-# 🧱 ACS 3330 – Lesson 9: Advanced Redux with Redux Toolkit
+# Lesson 9: Redux Toolkit
 
-## 📝 Overview
-In this lesson, you'll reinforce Redux fundamentals and learn how to streamline state management using **Redux Toolkit**. You'll convert traditional Redux patterns into slices, handle asynchronous logic with `createAsyncThunk`, and build a clean architecture using multiple slices.
+## Overview
 
----
+In this lesson you will refactor the clicker game from Zustand to Redux Toolkit. You will:
 
-## 🎯 Learning Goals
-- Refactor a basic reducer into a slice using `createSlice`
-- Handle asynchronous data fetching using `createAsyncThunk`
-- Manage multiple slices in a Redux store
-- Build selectors to derive computed state
-- Apply Redux best practices for scalable apps
-- Understand and apply the concept of **unidirectional data flow**
-- Understand the concept of a **reducer** from a computer science perspective
+- Map Zustand concepts directly to their RTK equivalents
+- Create a slice with `createSlice`
+- Set up a store with `configureStore`
+- Read state with `useSelector` and dispatch actions with `useDispatch`
+- Understand why RTK is the industry standard for larger applications
 
 ---
 
-## The problems and solution
-Flux and Redux were created to solve a problem. The simple approach is to store application state as component state. This entails lifting state to a parent component so it can be passed down to child components. 
+## Interview Context
 
-![state](./images/01-props.png)
+You passed the first interview. The team liked your solution.
 
-The image above shows how state, stored in App, might have to be passed as props to child components down the component tree. 
+They have called you back. This time the interviewer says:
 
-Another headache for React developers is passing data up the component tree. Its easy to pass data down the tree via props. Passing data up the tree most often requires a function be passed down that executes at parent component. 
+> "Our codebase uses Redux Toolkit as the standard for state management. We'd like to see you refactor your clicker game to use RTK instead of Zustand. The behavior should be identical — we're just changing the state layer."
 
-![up-the-chain](./images/02-up-chain.png)
+This is a realistic scenario. Companies have standards. Being able to adapt your solution to a team's chosen tools is a skill interviewers evaluate directly.
 
-## The solution
+**Before you start, write down your clarifying questions.** Some worth considering:
 
-In a Redux app state is placed in the store, which sits outside of the component tree. Any component can access the store directly, without passing props. 
+- Should the state shape stay the same?
+- Is there a preferred folder structure for slices and the store?
+- Should I keep Zustand installed, or remove it entirely?
+- Are there any RTK features the team expects me to use beyond `createSlice`?
 
-![store](./images/03-redux-store.png)
-
-## Redictable Data
-Redux describes itself as a "redictable state container". Changes to state can only be made by sending actions, and these actions are all processed in order. 
-
-![actions](./images/04-redux-action.png)
+Bring your questions to the instructor before you write any code.
 
 ---
 
-## 1️⃣ Recap: Redux Fundamentals
+## Part 1 — Zustand to RTK (25 min)
 
-### 🔐 Single Source of Truth
-Redux applications are built on the principle of having a **single source of truth** — one central store that holds all application state.
+### The Mapping
 
-Why this matters:
-- It allows consistent, centralized access to state from any component.
-- It avoids bugs caused by duplicated or out-of-sync state.
-- It simplifies debugging and testing by isolating where and how state changes.
+You already understand global state. You already know why it exists. The concepts in RTK are the same — the API is different.
 
-In Redux, the `store` acts as this single source, and all state changes flow through reducers.
+| Zustand | Redux Toolkit |
+|---|---|
+| `create((set) => ({ ... }))` | `createSlice` + `configureStore` |
+| State and updaters in one object | State in `initialState`, updaters in `reducers` |
+| Call a function from the store | `dispatch` an action |
+| `useGameStore((state) => state.x)` | `useSelector((state) => state.game.x)` |
+| No Provider needed | `<Provider store={store}>` wraps the app |
 
-💡 **AI Prompt:** "What is a single source of truth in state management and why is it important?"
+The biggest differences:
 
-### 🔁 What is Unidirectional Data Flow?
-Unidirectional data flow is a design pattern where **data moves in a single direction** throughout the app. In Redux, this helps maintain predictable state changes and makes debugging easier.
+1. **Actions are separate from state.** In Zustand you wrote functions directly in the store. In RTK, `createSlice` generates action creators that you dispatch.
+2. **You need a Provider.** RTK uses React context under the hood. The `<Provider>` makes the store available to all components.
+3. **State is namespaced.** Because the store can hold multiple slices, state is accessed via the slice name: `state.game.score` instead of `state.score`.
 
-Here’s how it works:
-1. A user **interacts with the UI** (clicks a button, types into a form)
-2. The UI **dispatches an action** describing the intent (e.g., `ADD_ITEM`)
-3. A **reducer handles the action** and returns new state
-4. The **store is updated**, and any components that depend on that state re-render
+> 💡 AI Prompt: "How does Redux Toolkit's createSlice compare to Zustand's create function?"
 
-This loop looks like:
-```
-UI → dispatch → reducer → store → UI
+---
+
+### Install Redux Toolkit
+
+```bash
+npm install @reduxjs/toolkit react-redux
 ```
 
-Because each step is isolated and data flows in only one direction, it becomes much easier to trace bugs, write tests, and reason about state in your app.
+You can uninstall Zustand once the refactor is complete:
 
-💡 **AI Prompt:** “What are the benefits of unidirectional data flow in large applications?”
+```bash
+npm uninstall zustand
+```
 
-- A Redux store holds global application state
-- Components dispatch **actions** that describe state changes
-- **Reducers** return new state based on action type and payload
-- Components access state with `useSelector`
-- Redux follows a **unidirectional data flow** model:
-  ```
-  UI → dispatch → reducer → store → UI
-  ```
+---
 
-### 🧠 What is a Reducer?
-In computer science, a **reducer** is a type of function that takes a collection (like an array) and "reduces" it to a single result by applying a transformation. In JavaScript, you've used this pattern with `.reduce()`:
+## Part 2 — Build the Store (25 min)
+
+### Create the Slice
+
+Create `src/store/gameSlice.js`. This replaces `src/store.js` from the Zustand version.
 
 ```js
-const total = numbers.reduce((acc, value) => acc + value, 0)
-```
-
-In Redux, a **reducer** is a pure function that:
-- Takes the current state and an action
-- Returns a new version of the state (if the state is changed)
-
-📌 **Important:** In Redux, you must return a new version of the state if it is modified. Simply mutating the existing state will not trigger updates.
-
-💡 However, **Redux Toolkit** uses the **Immer** library under the hood, which allows you to write code that appears to mutate state directly, while safely creating new immutable state behind the scenes.
-
-This pattern ensures that state changes are **predictable**, **testable**, and **traceable**.
-
-![redux-action](https://redux.js.org/assets/images/ReduxDataFlowDiagram-49fa8c3968371d9ef6f2a1486bd40a26.gif)
-
-The image above shows: 
-- An event dispatches an action
-- The action and state are passed the reducer, which updates state
-- Updated state is passed to the user interface
-
-Watch teh animation and find these things! 
-
-💡 **AI Prompt:** “In Dedux what is a reducer?”
-💡 **AI Prompt:** “In Redux what is an action?”
-💡 **AI Prompt:** “In Redux how does an action change state?”
-💡 **AI Prompt:** “In Redux can state be chnaged without an action?”
-💡 **AI Prompt:** “What makes a Redux reducer pure?”
-💡 **AI Prompt:** “What is unidirectional data flow and why is it useful in Redux?”
-💡 **AI Prompt:** “What is a reducer in functional programming, and how does that apply to Redux?”
-
-
-
----
-
-## 2️⃣ Why Redux Toolkit?
-Redux Toolkit (RTK) reduces boilerplate and encourages best practices:
-- `configureStore()` simplifies store setup
-- `createSlice()` automatically generates action creators and reducers
-- `createAsyncThunk()` handles async logic like API calls
-
-📚 Learn more: [Redux Toolkit Docs](https://redux-toolkit.js.org/)
-
-💡 **AI Prompt:** “How does createSlice simplify Redux logic?”
-
----
-
-## 3️⃣ Refactor a Reducer with `createSlice`
-Start with a basic `cartReducer` and refactor into a slice:
-
-```js
-// redux/cartSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 
-const cartSlice = createSlice({
-  name: 'cart',
-  initialState: [], // initial state is an empty array
+const gameSlice = createSlice({
+  name: 'game',
+  initialState: {
+    score: 0,
+    multiplier: 1,
+    clicks: 0,
+  },
   reducers: {
-    // This slice has two 
-    addItem: (state, action) => {
-      state.push(action.payload)
+    click: (state) => {
+      state.score += state.multiplier
+      state.clicks += 1
     },
-    removeItem: (state, action) => {
-      return state.filter(item => item.id !== action.payload.id)
+    buyUpgrade: (state) => {
+      state.score -= state.multiplier * 10
+      state.multiplier += 1
     }
   }
 })
 
-export const { addItem, removeItem } = cartSlice.actions
-export default cartSlice.reducer
+export const { click, buyUpgrade } = gameSlice.actions
+export default gameSlice.reducer
 ```
 
-📌 Redux Toolkit uses **Immer** internally to allow “mutating” state safely.
+Notice that `click` and `buyUpgrade` look like they mutate state directly. RTK uses a library called **Immer** under the hood, which intercepts these mutations and produces a new state object safely. You can write it as if you're mutating — RTK handles immutability for you.
 
-💡 **AI Prompt:** “What does immutable mean in computer science?”
-💡 **AI Prompt:** “In redux is state immutable?”
-💡 **AI Prompt:** “In redux why is state immutable?”
+> 💡 AI Prompt: "What is Immer and why does Redux Toolkit use it?"
 
 ---
 
-## 4️⃣ Handle Async with `createAsyncThunk`
-Asynchronous actions in Redux are handled in a special way, using a "thunk". 
+### Configure the Store
 
-
-
-Use `createAsyncThunk` to fetch data from an API (e.g. product list).
+Create `src/store/store.js`:
 
 ```js
-redux/weatherSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
-// This is your async action
-export const fetchWeather = createAsyncThunk('weather/fetch', async (zip) => {
-  const apikey = import.meta.env.VITE_API_KEY
-  const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=imperial`)
-  return await res.json()
-})
-
-const weatherSlice = createSlice({
-  name: 'weather',
-  initialState: {
-    weather: null,
-    status: 'idle',
-    error: null
-  },
-  reducers: {},
-  // Async actions are handled in extraReducer
-  extraReducers: (builder) => {
-    // Add cases for states pending, fulfilled, and rejected
-    builder
-      .addCase(fetchWeather.pending, (state) => {
-        state.status = 'loading'
-      })
-      .addCase(fetchWeather.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.weather = action.payload
-      })
-      .addCase(fetchWeather.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
-      })
-  }
-})
-
-export default weatherSlice.reducer
-```
-
-💡 **AI Prompt:** “How do I use createAsyncThunk in Redux Toolkit?”
-💡 **AI Prompt:** “What is a Thunk in computer science?”
-
-Read more about `createAsyncThunk`: https://redux-toolkit.js.org/api/createAsyncThunk
-
----
-
-## 5️⃣ Configure the Store
-
-```js
-// redux/store.js
 import { configureStore } from '@reduxjs/toolkit'
-import cartReducer from './cartSlice'
-import productsReducer from './productsSlice'
+import gameReducer from './gameSlice'
 
 export const store = configureStore({
   reducer: {
-    cart: cartReducer,
-    products: productsReducer
+    game: gameReducer
   }
 })
 ```
 
-Then wrap your app with the Redux provider:
-```js
-import { Provider } from 'react-redux'
-import { store } from './redux/store'
+The key `game` here is what namespaces your state. When you read state in a component you will use `state.game.score`, not `state.score`.
 
-<Provider store={store}>
-  <App />
-</Provider>
+---
+
+### Add the Provider
+
+In `src/main.jsx`, wrap your app with the Redux Provider:
+
+```jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { Provider } from 'react-redux'
+import { store } from './store/store'
+import App from './App.jsx'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StrictMode>
+)
 ```
 
-The `Provider` component allows the `useSelector` and `useDispatch` hooks to function. It must be placed at the top of the component tree. 
-
-💡 **AI Prompt:** “What a Provider component?”
+> 💡 AI Prompt: "What does the Redux Provider component do and why does it need to wrap the whole app?"
 
 ---
 
-## ✅ Recap: What You Learned
-| Concept            | Tool/Pattern |
-|--------------------|--------------|
-| Action Creators    | `createSlice()` |
-| Async API Fetching | `createAsyncThunk()` |
-| Store Setup        | `configureStore()` |
-| State Access       | `useSelector()` |
-| Dispatching Actions| `useDispatch()` |
-| Data Flow Model    | Unidirectional flow |
-| Reducer Pattern    | Functional reducer logic |
-
-💡 **AI Prompt:** “What’s the best way to structure slices in a large Redux app?”
+## Break (15 min)
 
 ---
 
-## 🧪 Challenge Project: Product Store
-Create a small product store app using:
-- `createSlice()` for cart logic
-- `createAsyncThunk()` for loading products
-- Display loading and error states
-- Show totals in cart using `reduce`
+## Part 3 — Refactor the Components (40 min)
+
+Remove Zustand imports from each component. Replace them with `useSelector` to read state and `useDispatch` to send actions.
+
+### App.jsx
+
+`App` stays the same — no state, no props. This does not change.
+
+```jsx
+import Header from './components/Header'
+import GameArea from './components/GameArea'
+import './App.css'
+
+function App() {
+  return (
+    <div className="app">
+      <Header />
+      <GameArea />
+    </div>
+  )
+}
+
+export default App
+```
 
 ---
 
-## 📚 Resources
+### Header.jsx
+
+Replace `useGameStore` with `useSelector`:
+
+```jsx
+import { useSelector } from 'react-redux'
+
+function Header() {
+  const score = useSelector((state) => state.game.score)
+  const clicks = useSelector((state) => state.game.clicks)
+
+  return (
+    <header className="header">
+      <h1>Clicker Game</h1>
+      <span className="header-score">Score: {score}</span>
+      <span>Clicks: {clicks}</span>
+    </header>
+  )
+}
+
+export default Header
+```
+
+---
+
+### GameArea.jsx
+
+No changes needed — it passes no props and imports nothing from the store.
+
+---
+
+### Clicker.jsx
+
+Replace the Zustand function call with `dispatch`:
+
+```jsx
+import { useDispatch, useSelector } from 'react-redux'
+import { click } from '../store/gameSlice'
+
+function Clicker() {
+  const dispatch = useDispatch()
+  const multiplier = useSelector((state) => state.game.multiplier)
+
+  return (
+    <div className="clicker">
+      <button className="click-button" onClick={() => dispatch(click())}>
+        Click!
+      </button>
+      <p>+{multiplier} per click</p>
+    </div>
+  )
+}
+
+export default Clicker
+```
+
+---
+
+### UpgradeShop.jsx
+
+```jsx
+import { useDispatch, useSelector } from 'react-redux'
+import { buyUpgrade } from '../store/gameSlice'
+
+function UpgradeShop() {
+  const dispatch = useDispatch()
+  const score = useSelector((state) => state.game.score)
+  const multiplier = useSelector((state) => state.game.multiplier)
+  const cost = multiplier * 10
+
+  return (
+    <div className="upgrade-shop">
+      <h2>Upgrades</h2>
+      <div className="upgrade">
+        <div>
+          <strong>Bigger Clicks</strong>
+          <p>Each click earns +1 more point</p>
+        </div>
+        <button onClick={() => dispatch(buyUpgrade())} disabled={score < cost}>
+          Buy ({cost} pts)
+        </button>
+      </div>
+      <p className="multiplier-display">Current multiplier: x{multiplier}</p>
+    </div>
+  )
+}
+
+export default UpgradeShop
+```
+
+> 💡 AI Prompt: "What is the difference between useSelector and useDispatch in React Redux?"
+
+---
+
+### Verify
+
+Run the app. The behavior should be identical to the Zustand version. If anything looks different, the bug is in the refactor, not the logic.
+
+---
+
+## Part 4 — Stretch Challenge (20 min)
+
+### Add a Second Slice
+
+The interviewer adds a follow-up requirement:
+
+> "We'd also like to track a leaderboard — the top 5 scores across sessions. Can you add that as a separate slice?"
+
+Add a `leaderboardSlice.js` that:
+- Holds an array of top scores
+- Has an action to submit the current score
+- Only keeps the top 5, sorted highest first
+
+Wire it into the store alongside `gameSlice`:
+
+```js
+export const store = configureStore({
+  reducer: {
+    game: gameReducer,
+    leaderboard: leaderboardReducer
+  }
+})
+```
+
+This is the RTK pattern for real applications — one store, multiple slices, each responsible for its own domain.
+
+> 💡 AI Prompt: "How do I manage multiple slices in a Redux Toolkit store?"
+
+---
+
+## Debrief — What Changed and What Didn't (10 min)
+
+Look at the two versions side by side.
+
+**What stayed the same:**
+- `App.jsx` and `GameArea.jsx` — untouched
+- The state shape (`score`, `multiplier`, `clicks`)
+- The logic inside each action
+- How components read and write state — one import, no props
+
+**What changed:**
+- `create()` became `createSlice()` + `configureStore()`
+- Store functions became dispatched actions
+- `useGameStore` became `useSelector` + `useDispatch`
+- A `<Provider>` is now required
+
+The behavior is identical. The difference is structure and convention — RTK adds more ceremony, but that ceremony makes large codebases easier to navigate, debug, and test.
+
+**What interviewers are looking for in a refactor challenge:**
+
+| | Response |
+|---|---|
+| **Weak** | Rewrites everything from scratch without comparing the two approaches |
+| **Good** | Identifies the mapping between libraries before writing code |
+| **Strong** | Asks about the team's conventions, keeps the diff minimal, explains tradeoffs |
+
+A refactor that changes the minimum necessary is a better signal than one that rewrites everything.
+
+---
+
+## Key Concepts
+
+| Concept | Zustand | Redux Toolkit |
+|---|---|---|
+| Define state | Inside `create()` | `initialState` in `createSlice` |
+| Update state | Functions in the store | Reducers in `createSlice` |
+| Read state | `useGameStore(state => state.x)` | `useSelector(state => state.game.x)` |
+| Write state | Call the function | `dispatch(actionCreator())` |
+| Wire up | No setup needed | `configureStore` + `<Provider>` |
+
+---
+
+## Further Reading
+
 - [Redux Toolkit Docs](https://redux-toolkit.js.org/)
-- [Redux Fundamentals Tutorial](https://redux.js.org/tutorials/fundamentals/part-1-overview)
+- [createSlice API](https://redux-toolkit.js.org/api/createSlice)
 - [React Redux Quick Start](https://react-redux.js.org/introduction/quick-start)
