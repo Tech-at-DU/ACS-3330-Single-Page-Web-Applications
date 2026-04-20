@@ -33,9 +33,7 @@ Bring your questions to the instructor before you write any code.
 
 ---
 
-## Part 1 — Zustand to RTK (25 min)
-
-### The Mapping
+## Part 1 — The Mapping (20 min)
 
 You already understand global state. You already know why it exists. The concepts in RTK are the same — the API is different.
 
@@ -47,7 +45,7 @@ You already understand global state. You already know why it exists. The concept
 | `useGameStore((state) => state.x)` | `useSelector((state) => state.game.x)` |
 | No Provider needed | `<Provider store={store}>` wraps the app |
 
-The biggest differences:
+Three key differences to keep in mind as you work:
 
 1. **Actions are separate from state.** In Zustand you wrote functions directly in the store. In RTK, `createSlice` generates action creators that you dispatch.
 2. **You need a Provider.** RTK uses React context under the hood. The `<Provider>` makes the store available to all components.
@@ -55,23 +53,17 @@ The biggest differences:
 
 > 💡 AI Prompt: "How does Redux Toolkit's createSlice compare to Zustand's create function?"
 
----
-
-### Install Redux Toolkit
+Install Redux Toolkit before moving on:
 
 ```bash
 npm install @reduxjs/toolkit react-redux
 ```
 
-You can uninstall Zustand once the refactor is complete:
-
-```bash
-npm uninstall zustand
-```
-
 ---
 
 ## Part 2 — Build the Store (25 min)
+
+This part is instructor-led. The store layer introduces new APIs — `createSlice`, `configureStore`, and `Provider` — that you have not written before. Follow along, then you will use this as the foundation for the challenge.
 
 ### Create the Slice
 
@@ -103,7 +95,7 @@ export const { click, buyUpgrade } = gameSlice.actions
 export default gameSlice.reducer
 ```
 
-Notice that `click` and `buyUpgrade` look like they mutate state directly. RTK uses a library called **Immer** under the hood, which intercepts these mutations and produces a new state object safely. You can write it as if you're mutating — RTK handles immutability for you.
+Notice that `click` and `buyUpgrade` look like they mutate state directly. RTK uses a library called **Immer** under the hood, which intercepts these writes and produces a new state object safely. You can write it as if you're mutating — RTK handles immutability for you.
 
 > 💡 AI Prompt: "What is Immer and why does Redux Toolkit use it?"
 
@@ -124,7 +116,7 @@ export const store = configureStore({
 })
 ```
 
-The key `game` here is what namespaces your state. When you read state in a component you will use `state.game.score`, not `state.score`.
+The key `game` is what namespaces your state. In components you will read `state.game.score`, not `state.score`.
 
 ---
 
@@ -157,158 +149,43 @@ createRoot(document.getElementById('root')).render(
 
 ---
 
-## Part 3 — Refactor the Components (40 min)
+## Part 3 — Refactor the Components (45 min)
 
-Remove Zustand imports from each component. Replace them with `useSelector` to read state and `useDispatch` to send actions.
+The store is set up. The app will not work yet — the components still import from Zustand.
 
-### App.jsx
+Your job is to refactor each component to use RTK. Remove the Zustand imports and replace them using only two tools:
 
-`App` stays the same — no state, no props. This does not change.
+- `useSelector` — to read state from the store
+- `useDispatch` — to send actions to the store
+- The action creators exported from `gameSlice.js`
 
-```jsx
-import Header from './components/Header'
-import GameArea from './components/GameArea'
-import './App.css'
+Use the mapping table from Part 1. The logic inside each component does not change — only where it gets its state and how it updates it.
 
-function App() {
-  return (
-    <div className="app">
-      <Header />
-      <GameArea />
-    </div>
-  )
-}
+**Components to refactor:**
+- `Header.jsx`
+- `Clicker.jsx`
+- `UpgradeShop.jsx`
 
-export default App
-```
+`App.jsx` and `GameArea.jsx` do not need changes — they pass no props and import nothing from the store.
 
----
-
-### Header.jsx
-
-Replace `useGameStore` with `useSelector`:
-
-```jsx
-import { useSelector } from 'react-redux'
-
-function Header() {
-  const score = useSelector((state) => state.game.score)
-  const clicks = useSelector((state) => state.game.clicks)
-
-  return (
-    <header className="header">
-      <h1>Clicker Game</h1>
-      <span className="header-score">Score: {score}</span>
-      <span>Clicks: {clicks}</span>
-    </header>
-  )
-}
-
-export default Header
-```
-
----
-
-### GameArea.jsx
-
-No changes needed — it passes no props and imports nothing from the store.
-
----
-
-### Clicker.jsx
-
-Replace the Zustand function call with `dispatch`:
-
-```jsx
-import { useDispatch, useSelector } from 'react-redux'
-import { click } from '../store/gameSlice'
-
-function Clicker() {
-  const dispatch = useDispatch()
-  const multiplier = useSelector((state) => state.game.multiplier)
-
-  return (
-    <div className="clicker">
-      <button className="click-button" onClick={() => dispatch(click())}>
-        Click!
-      </button>
-      <p>+{multiplier} per click</p>
-    </div>
-  )
-}
-
-export default Clicker
-```
-
----
-
-### UpgradeShop.jsx
-
-```jsx
-import { useDispatch, useSelector } from 'react-redux'
-import { buyUpgrade } from '../store/gameSlice'
-
-function UpgradeShop() {
-  const dispatch = useDispatch()
-  const score = useSelector((state) => state.game.score)
-  const multiplier = useSelector((state) => state.game.multiplier)
-  const cost = multiplier * 10
-
-  return (
-    <div className="upgrade-shop">
-      <h2>Upgrades</h2>
-      <div className="upgrade">
-        <div>
-          <strong>Bigger Clicks</strong>
-          <p>Each click earns +1 more point</p>
-        </div>
-        <button onClick={() => dispatch(buyUpgrade())} disabled={score < cost}>
-          Buy ({cost} pts)
-        </button>
-      </div>
-      <p className="multiplier-display">Current multiplier: x{multiplier}</p>
-    </div>
-  )
-}
-
-export default UpgradeShop
-```
+When all three components are refactored, the app should behave identically to the Zustand version. If behavior changes, the bug is in the refactor, not the logic.
 
 > 💡 AI Prompt: "What is the difference between useSelector and useDispatch in React Redux?"
 
 ---
 
-### Verify
-
-Run the app. The behavior should be identical to the Zustand version. If anything looks different, the bug is in the refactor, not the logic.
-
----
-
 ## Part 4 — Stretch Challenge (20 min)
-
-### Add a Second Slice
 
 The interviewer adds a follow-up requirement:
 
-> "We'd also like to track a leaderboard — the top 5 scores across sessions. Can you add that as a separate slice?"
+> "We'd also like to track a leaderboard — the top 5 scores. Can you add that as a separate slice?"
 
-Add a `leaderboardSlice.js` that:
+Create a `leaderboardSlice.js` that:
 - Holds an array of top scores
 - Has an action to submit the current score
 - Only keeps the top 5, sorted highest first
 
-Wire it into the store alongside `gameSlice`:
-
-```js
-export const store = configureStore({
-  reducer: {
-    game: gameReducer,
-    leaderboard: leaderboardReducer
-  }
-})
-```
-
-This is the RTK pattern for real applications — one store, multiple slices, each responsible for its own domain.
+Wire it into the store alongside `gameSlice`. This is the RTK pattern for real applications — one store, multiple slices, each responsible for its own domain.
 
 > 💡 AI Prompt: "How do I manage multiple slices in a Redux Toolkit store?"
 
@@ -316,13 +193,11 @@ This is the RTK pattern for real applications — one store, multiple slices, ea
 
 ## Debrief — What Changed and What Didn't (10 min)
 
-Look at the two versions side by side.
-
 **What stayed the same:**
 - `App.jsx` and `GameArea.jsx` — untouched
 - The state shape (`score`, `multiplier`, `clicks`)
 - The logic inside each action
-- How components read and write state — one import, no props
+- No props anywhere in the component tree
 
 **What changed:**
 - `create()` became `createSlice()` + `configureStore()`
@@ -330,15 +205,15 @@ Look at the two versions side by side.
 - `useGameStore` became `useSelector` + `useDispatch`
 - A `<Provider>` is now required
 
-The behavior is identical. The difference is structure and convention — RTK adds more ceremony, but that ceremony makes large codebases easier to navigate, debug, and test.
+The behavior is identical. RTK adds more ceremony, but that structure makes large codebases easier to navigate, debug, and test.
 
-**What interviewers are looking for in a refactor challenge:**
+**What interviewers look for in a refactor challenge:**
 
 | | Response |
 |---|---|
 | **Weak** | Rewrites everything from scratch without comparing the two approaches |
 | **Good** | Identifies the mapping between libraries before writing code |
-| **Strong** | Asks about the team's conventions, keeps the diff minimal, explains tradeoffs |
+| **Strong** | Asks about team conventions, keeps the diff minimal, explains the tradeoffs |
 
 A refactor that changes the minimum necessary is a better signal than one that rewrites everything.
 
