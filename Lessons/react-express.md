@@ -1,102 +1,236 @@
-# 🔄 React + Server with React Query
+# Lesson 10: React Query
 
-## 📝 Overview
-In this lesson, you’ll connect a React frontend to a custom backend server built with Express or Flask. You’ll use **React Query** to handle data fetching, caching, and synchronization between client and server.
+## Overview
 
-React Query simplifies the process of loading data into a React application. Instead of managing loading/error/data states manually, React Query handles this for you with just a few hooks.
+In this lesson you will use React Query to fetch data from a public API. You will:
 
-You’ll start with a working server and build a small frontend that fetches data from your custom API.
+- Understand when to use React Query versus `useEffect` or `createAsyncThunk`
+- Set up a `QueryClientProvider`
+- Use `useQuery` to fetch, cache, and display data
+- Handle loading, error, and empty states
+- Connect this to your Assignment 4 API choice
 
 ---
 
-## 🚀 Why React Needs a Backend
-While React is great at managing components and state, it does not provide a way to store data. That’s where a backend server comes in. Whether it’s built with **Express (Node.js)** or **Flask (Python)**, your backend serves data and performs logic React can’t handle alone.
+## Milestone 1 is due Monday
 
-Your React app makes HTTP requests ( `GET`, `POST`, `PUT`, `DELETE`) to interact with this backend. For example:
-```bash
-GET /sfpopos → [{ title: "Union Square" }, { title: "Yerba Buena Gardens" }]
+Assignment 4 Milestone 1 requires: project idea decided, API chosen, Vite project created, global store set up.
+
+Use today's class to get ahead of that. If you experiment with your actual Assignment 4 API during the lab, you will leave class with Milestone 1 nearly complete.
+
+---
+
+## Part 1 — How Should You Fetch Data? (15 min)
+
+You have three options for async data fetching in a React app. They are not interchangeable.
+
+| Approach | Best for | Data lives in |
+|---|---|---|
+| `useEffect` + `fetch` | Simple one-off fetches, small apps | Component state |
+| `createAsyncThunk` | API data that belongs in your Redux store, shared across many components | Redux store |
+| `useQuery` (React Query) | Any API data — handles caching, re-fetching, loading/error states automatically | React Query cache |
+
+**The key distinction:** React Query manages **server state** — data that lives on a server and needs to stay in sync. Redux and Zustand manage **client state** — data your app creates and owns.
+
+These can coexist. A common pattern for Assignment 4:
+- Zustand or RTK for your app's own state (filters, cart, UI)
+- React Query for data fetched from an external API
+
+**Zustand async** is also worth knowing. If you are using Zustand and want to keep all your logic in one place, you can fetch inside a store action directly:
+
+```js
+const useStore = create((set) => ({
+  data: null,
+  fetchData: async () => {
+    const res = await fetch('https://api.example.com/data')
+    const data = await res.json()
+    set({ data })
+  }
+}))
 ```
 
+No middleware or special setup needed. Simple, but gives you none of React Query's caching or automatic re-fetching.
+
+> 💡 AI Prompt: "What is the difference between server state and client state in React?"
+
+> 💡 AI Prompt: "When should I use React Query instead of useEffect to fetch data?"
+
 ---
 
-## 📦 What is React Query?
-React Query is a powerful data-fetching library for React. It manages:
-- Loading and error states
-- Caching and re-fetching
-- Background updates
+## Part 2 — Setup (15 min)
 
-Use React Query to replace `fetch` and `useEffect`. 
+Install React Query:
 
-### Install it:
 ```bash
 npm install @tanstack/react-query
 ```
 
----
-
-## 🧠 Setting Up React Query
-Wrap your app in a `QueryClientProvider` so you can use hooks like `useQuery`.
+Wrap your app in a `QueryClientProvider` in `main.jsx`:
 
 ```jsx
-// index.js
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import App from './App.jsx'
+import './index.css'
 
 const queryClient = new QueryClient()
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </StrictMode>
 )
 ```
 
+The `QueryClientProvider` works the same way as Redux's `Provider` — it makes React Query available to every component in the tree.
+
+> 💡 AI Prompt: "What does QueryClient do in React Query?"
+
 ---
 
-## 🔍 Using `useQuery` to Load Data
-React Query’s main hook is `useQuery`. It takes a **query key** and a **fetching function**:
+## Part 3 — Demo: useQuery (20 min)
+
+`useQuery` is React Query's core hook. It takes a query key and a fetch function, and returns the current state of the request.
 
 ```jsx
-const { isLoading, error, data } = useQuery({
-  queryKey: ['sfpopos'],
-  queryFn: () => fetch('/sfpopos').then(res => res.json())
-})
+import { useQuery } from '@tanstack/react-query'
 
-if (isLoading) return <p>Loading...</p>
-if (error) return <p>Error loading data: {error.message}</p>
+function CharacterList() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['characters'],
+    queryFn: () =>
+      fetch('https://rickandmortyapi.com/api/character')
+        .then(res => res.json())
+  })
 
-return (
-  <div>
-    {data.map(item => <p key={item.title}>{item.title}</p>)}
-  </div>
-)
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+  if (!data) return <p>No data found.</p>
+
+  return (
+    <ul>
+      {data.results.map(character => (
+        <li key={character.id}>
+          <img src={character.image} alt={character.name} width={50} />
+          {character.name} — {character.status}
+        </li>
+      ))}
+    </ul>
+  )
+}
 ```
 
+### What each return value means
+
+| Value | Type | Description |
+|---|---|---|
+| `data` | any | The resolved value from your fetch function |
+| `isLoading` | boolean | True while the first fetch is in progress |
+| `error` | Error or null | Set if the fetch function throws |
+| `isFetching` | boolean | True any time a fetch is in progress, including re-fetches |
+
+### Query Keys
+
+The `queryKey` is how React Query identifies and caches a request. If two components use the same key, they share one request — no duplicate fetches.
+
+```js
+queryKey: ['characters']        // fetch once, cache it
+queryKey: ['character', id]     // re-fetch whenever id changes
+queryKey: ['characters', page]  // re-fetch whenever page changes
+```
+
+When the key changes, React Query automatically re-runs the fetch. This is how you implement search or pagination without managing the fetch lifecycle yourself.
+
+> 💡 AI Prompt: "How do React Query query keys work and why are they important?"
+
 ---
 
-## 💡 Understanding Query Keys and Caching
-React Query uses the `queryKey` to cache and manage requests.
-- If the key doesn’t change, React Query returns cached data
-- If the key changes, it re-fetches the data
-
-This pattern makes your UI responsive and efficient.
+## Break (15 min)
 
 ---
 
-## 🧪 Using react Query in your Custom Project
-If you decide to create a custom project that uses a server or fetches data from a web API, I recommend you use React Query.
+## Part 4 — Lab: Fetch from a Public API (60 min)
 
-### 🔧 Backend Setup
-The following link is a GitHub repo that contains projects that implement a Express, Flash, and MongoDB servers. There is also an example React Client that loads data from the example servers.
+Pick one of the APIs below — or use the API you are planning for Assignment 4.
 
-https://github.com/Tech-at-DU/React-Express-Tutorial
+Build a small React app that:
+
+1. Fetches a list of items from the API using `useQuery`
+2. Displays the results — include at least a name or title and one other field
+3. Handles all three states: loading, error, and empty
+
+**Suggested APIs — no authentication required:**
+
+| API | Endpoint | Notes |
+|---|---|---|
+| Rick and Morty | `https://rickandmortyapi.com/api/character` | Results in `data.results`, includes image URLs |
+| PokeAPI | `https://pokeapi.co/api/v2/pokemon?limit=20` | Results in `data.results`, name and detail URL per item |
+| REST Countries | `https://restcountries.com/v3.1/region/europe?fields=name,capital,population` | Array at top level, name is `item.name.common` |
+| Open Library | `https://openlibrary.org/search.json?subject=javascript&limit=10` | Results in `data.docs`, change subject to match your interest |
+
+If you are using your own Assignment 4 API: find a public endpoint that returns a list and go.
+
+### Tips
+
+- Start with `console.log(data)` to see the shape of the response before trying to render it
+- API responses are often nested — `data.results`, `data.docs`, `data[0].name.common`
+- Deliberately break your URL to confirm your error state works
+- Check your loading state by adding a `staleTime: 0` option and refreshing
+
+### Stretch
+
+- Add a search input that changes the query key and re-fetches with the new term
+- Use `isFetching` to show a subtle indicator during re-fetches without hiding existing results
+- Display how many total results exist using metadata from the response
+
+> 💡 AI Prompt: "How do I add search to a React Query useQuery hook?"
 
 ---
 
-## 📚 Resources
+## Part 5 — Share Out (20 min)
+
+Show the group what you built. Cover:
+
+- Which API you used and what it returns
+- How you handled the loading and error states
+- Anything that surprised you about the response shape
+
+---
+
+## Connecting to Assignment 4 (10 min)
+
+If you used your Assignment 4 API today, you have a working proof of concept. For Milestone 1 on Monday you need:
+
+- [ ] Project idea decided
+- [ ] API chosen and confirmed working
+- [ ] Vite project created
+- [ ] Global store set up with at least one piece of state
+
+The API is done. The remaining piece is the store — wire in Zustand or RTK before Monday.
+
+If you are still deciding on an API, the question to ask is: does this API return data I can do something interesting with? Filtering, searching, combining with user state — if yes, it is probably a good fit.
+
+---
+
+## Key Concepts
+
+| Concept | Description |
+|---|---|
+| `useQuery` | Fetches data, manages loading/error/cache automatically |
+| `queryKey` | Identifies the request — changing it triggers a re-fetch |
+| `queryFn` | The function that does the actual fetching |
+| `isLoading` | True during the initial fetch |
+| `error` | Set when the fetch function throws |
+| Server state | Data owned by a server, fetched and kept in sync |
+| Client state | Data owned by your app — Redux/Zustand territory |
+
+---
+
+## Further Reading
+
 - [React Query Docs](https://tanstack.com/query/latest/docs/framework/react/overview)
-- [Express API Example Repo](https://github.com/Tech-at-DU/express-api-example)
-- [Flask API Example Repo](https://github.com/Tech-at-DU/flask-api-example)
-
----
-
-🎉 Now go build something awesome! Let your frontend talk to your backend!
+- [Practical React Query](https://tkdodo.eu/blog/practical-react-query) — the best guide beyond the official docs
+- [Backend starter repos](https://github.com/Tech-at-DU/React-Express-Tutorial) — Express, Flask, and MongoDB examples if you want a custom backend for Assignment 4
