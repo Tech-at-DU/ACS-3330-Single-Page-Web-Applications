@@ -42,7 +42,7 @@ Take 10 minutes to read both. Then answer these questions in writing before any 
 1. What does `0xffffff` represent? What is its decimal equivalent?
 2. What does `.toString(16)` do? What does the `16` mean?
 3. Why does Solution A need `.padStart(6, '0')`? When would the result be fewer than 6 characters without it? Give a specific example.
-4. Solution B has a subtle difference from Solution A. What is it, and does it matter?
+4. Can Solution A ever generate `#ffffff` (pure white)? Trace through the math and explain why or why not. Does Solution B have the same limitation?
 5. Which solution would you rather maintain six months from now, and why?
 
 **Discussion**
