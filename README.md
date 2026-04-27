@@ -57,7 +57,7 @@ By the end of the course, you will be able to:
 | 10    | Wed, Apr 22 | [React and Express] | - |
 |  -    | **Week 6**  | - | - | - |
 | 11    | Mon, Apr 27 | [Tailwind CSS] | A4 Milestone 1 — idea, API, store set up |
-| 12    | Wed, Apr 29 | [Framer Motion] | A4 Milestone 2 — core features working |
+| 12    | Wed, Apr 29 | [Tailwind CSS II] | A4 Milestone 2 — core features working |
 |  -    | **Week 7**  | - | - | - |
 | 13    | Mon, May  4 | [RTK Query] - [More Motion] | [Assignment 4 - Custom Project] due |
 | 14    | Wed, May  6 |  | Final Assessment | - |
@@ -80,6 +80,7 @@ By the end of the course, you will be able to:
 [useEffect Hook]: Lessons/lesson-11.md
 [Present Final Projects]: Lessons/lesson-12.md
 [Tailwind CSS]: Lessons/tailwind.md
+[Tailwind CSS II]: Lessons/tailwind-2.md
 [Framer Motion]: Lessons/framer-motion.md
 [RTK Query]: https://github.com/Tech-at-DU/redux-toolkit-async
 
