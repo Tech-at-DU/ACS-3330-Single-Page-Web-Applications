@@ -32,7 +32,7 @@ As your components grow, you will need to apply classes based on props or state.
 <button className={"px-4 py-2 " + (isActive ? "bg-blue-500" : "bg-gray-300")}>
 ```
 
-`clsx` solves this cleanly.
+[`clsx`](https://www.npmjs.com/package/clsx) solves this cleanly.
 
 ### Install
 
@@ -104,7 +104,7 @@ Good candidates: a button that is active/inactive, a card that is selected, a fi
 
 ## Part 2 — Responsive Design (20 min)
 
-Tailwind is mobile-first. You write the base style for small screens, then add prefixes to override at larger breakpoints.
+Tailwind is mobile-first. You write the base style for small screens, then add prefixes to override at larger breakpoints. Full reference: [Tailwind Responsive Design docs](https://tailwindcss.com/docs/responsive-design).
 
 ```jsx
 <div className="text-sm md:text-base lg:text-lg">
@@ -144,6 +144,8 @@ This reads: small text by default, base size on medium screens, large on large s
 ---
 
 ## Part 3 — Group and Peer (20 min)
+
+Full reference: [Tailwind Hover, Focus & Other States docs](https://tailwindcss.com/docs/hover-focus-and-other-states).
 
 ### `group` — style children based on parent state
 
