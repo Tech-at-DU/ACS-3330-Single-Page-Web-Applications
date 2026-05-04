@@ -59,11 +59,11 @@ By the end of the course, you will be able to:
 | 11    | Mon, Apr 27 | [Tailwind CSS] | A4 Milestone 1 — idea, API, store set up |
 | 12    | Wed, Apr 29 | [Tailwind CSS II] | A4 Milestone 2 — core features working |
 |  -    | **Week 7**  | - | - | - |
-| 13    | Mon, May  4 | [RTK Query] - [More Motion] | [Assignment 4 - Custom Project] due |
-| 14    | Wed, May  6 |  | Final Assessment | - |
+| 13    | Mon, May  4 | [Framer Motion I] | [Assignment 4 - Custom Project] due |
+| 14    | Wed, May  6 | [Framer Motion II] | - |
 |  -    | **Week 8**  | - | - | - |
 | 15    | Mon, May 11 | - Final Presentation| - | 
-| 15    | Mon, May 13 | - Final Presentation| - | 
+| 16    | Mon, May 13 | - Final Presentation| - | 
 
 [React and functional Programming]: Lessons/lesson-01.md
 [React, Props, and State]: Lessons/lesson-02.md
@@ -82,6 +82,8 @@ By the end of the course, you will be able to:
 [Tailwind CSS]: Lessons/tailwind.md
 [Tailwind CSS II]: Lessons/tailwind-2.md
 [Framer Motion]: Lessons/framer-motion.md
+[Framer Motion I]: Lessons/lesson-13.md
+[Framer Motion II]: Lessons/lesson-14.md
 [RTK Query]: https://github.com/Tech-at-DU/redux-toolkit-async
 
 [More Motion]: https://github.com/Tech-at-DU/vite-pages-animated
